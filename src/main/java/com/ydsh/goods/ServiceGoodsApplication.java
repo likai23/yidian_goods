@@ -1,15 +1,14 @@
 package com.ydsh.goods;
 
-import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.ConfigService;
-import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
-import java.io.IOException;
-
+import com.ctrip.framework.apollo.Config;
+import com.ctrip.framework.apollo.ConfigService;
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
+ 
 @SpringBootApplication(exclude = {FreeMarkerAutoConfiguration.class})
 @EnableEurekaClient
 @EnableApolloConfig

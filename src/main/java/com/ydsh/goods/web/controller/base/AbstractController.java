@@ -1,7 +1,7 @@
 /**
  * @filename:GoodsAttributeAddController 2019-06-12 10:08:37
  * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.controller.base;
@@ -28,7 +28,7 @@ import java.util.List;
  * 
  * <p>说明： 商品销售属性管理新增属性API接口层</P>
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  *
  */
 public class AbstractController<S extends IService<T>,T>{
@@ -41,11 +41,11 @@ public class AbstractController<S extends IService<T>,T>{
 	 * @explain 查询对象  <swagger GET请求>
 	 * @param   id
 	 * @return  JsonResult
-	 * @author  姚仲杰
+	 * @author  戴艺辉
 	 * @time    2019-06-12 10:08:37
 	 */
     @RequestMapping(value = "/getById/{id}",method = RequestMethod.GET)
-	@ApiOperation(value = "获取对象", notes = "作者：姚仲杰")
+	@ApiOperation(value = "获取对象", notes = "作者：戴艺辉")
 	@ApiImplicitParam(paramType="path", name = "id", value = "对象id", required = true, dataType = "Long")
 	public JsonResult<T> getById(@PathVariable("id")Long id){
 		T obj=baseService.getById(id);
@@ -61,11 +61,11 @@ public class AbstractController<S extends IService<T>,T>{
 	 * @explain 添加
 	 * @param   entity
 	 * @return  JsonResult
-	 * @author  姚仲杰
+	 * @author  戴艺辉
 	 * @time    2019-06-12 10:08:37
 	 */
     @RequestMapping(value = "/insert",method = RequestMethod.POST)
-	@ApiOperation(value = "添加", notes = "作者：姚仲杰")
+	@ApiOperation(value = "添加", notes = "作者：戴艺辉")
 	public JsonResult<T> insert(@RequestBody T entity){
 		JsonResult<T> result=new JsonResult<T>();
 		if (null!=entity) {
@@ -85,11 +85,11 @@ public class AbstractController<S extends IService<T>,T>{
 	* @explain 批量添加
 	* @param   entityList
 	* @return  Boolean
-	* @author  姚仲杰
+	* @author  戴艺辉
 	* @time    2019-06-12 10:08:37
 	*/
 	@RequestMapping(value = "/insertBatch",method = RequestMethod.POST)
-	@ApiOperation(value = "批量添加", notes = "作者：姚仲杰")
+	@ApiOperation(value = "批量添加", notes = "作者：戴艺辉")
 	public JsonResult<T> insertBatch(@RequestBody List<T> entityList){
 		JsonResult<T> result=new JsonResult<T>();
 		List<T> list=entityList;
@@ -110,11 +110,11 @@ public class AbstractController<S extends IService<T>,T>{
 	 * @explain 修改
 	 * @param   entity
 	 * @return  JsonResult
-	 * @author  姚仲杰
+	 * @author  戴艺辉
 	 * @time    2019-06-12 10:08:37
 	 */
 	@RequestMapping(value = "/updateById",method = RequestMethod.POST)
-	@ApiOperation(value = "根据id修改", notes = "作者：姚仲杰")
+	@ApiOperation(value = "根据id修改", notes = "作者：戴艺辉")
 	public JsonResult<T> updateById(@RequestBody T entity){
 		JsonResult<T> result=new JsonResult<T>();
 		if (null!=entity) {
@@ -133,11 +133,11 @@ public class AbstractController<S extends IService<T>,T>{
 	* @explain 批量修改
 	* @param   entityList
 	* @return  JsonResult
-	* @author  姚仲杰
+	* @author  戴艺辉
 	* @time    2019-06-12 10:08:37
 	*/
     @RequestMapping(value = "/updateBatchById",method = RequestMethod.POST)
-	@ApiOperation(value = "批量根据id修改", notes = "作者：姚仲杰")
+	@ApiOperation(value = "批量根据id修改", notes = "作者：戴艺辉")
 	public JsonResult<T> updateBatchById(@RequestBody List<T> entityList) {
 		JsonResult<T> result = new JsonResult<T>();
 		if (null != entityList) {
@@ -157,11 +157,11 @@ public class AbstractController<S extends IService<T>,T>{
 	 * @explain 分页条件查询用户   
 	 * @param   pageParam
 	 * @return  JsonResult
-	 * @author  姚仲杰
+	 * @author  戴艺辉
 	 * @time    2019-06-12 10:08:37
 	 */
     @RequestMapping(value = "/getPages",method = RequestMethod.GET)
-	@ApiOperation(value = "分页查询", notes = "分页查询返回[IPage<T>],作者：姚仲杰")
+	@ApiOperation(value = "分页查询", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
 	public JsonResult<IPage<T>> getPages(PageParam<T> pageParam){
 		JsonResult<IPage<T>> returnPage=new JsonResult<IPage<T>>();
 		Page<T> page=new Page<T>(pageParam.getPageNum(),pageParam.getPageSize());

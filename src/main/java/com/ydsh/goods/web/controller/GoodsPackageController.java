@@ -1,7 +1,7 @@
 /**
  * @filename:GoodsPackageController 2019-06-12 10:08:38
  * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.controller;
@@ -56,7 +56,7 @@ import lombok.extern.slf4j.Slf4j;
  * </P>
  * 
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  *
  */
 @Api(description = "套餐商品管理", value = "套餐商品管理")
@@ -95,7 +95,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 	* @return
 	 */
     @RequestMapping(value = "/getPackagePages",method = RequestMethod.GET)
-	@ApiOperation(value = "分页查询", notes = "分页查询返回[IPage<T>],作者：姚仲杰")
+	@ApiOperation(value = "分页查询", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
 	public JsonResult<IPage<Map<String,Object>>> getPackagePages(PageParam<GoodsPackage> pageParam){
 		JsonResult<IPage<Map<String,Object>>> returnPage=new JsonResult<IPage<Map<String,Object>>>();
 		Page<GoodsPackage> page=new Page<GoodsPackage>(pageParam.getPageNum(),pageParam.getPageSize());

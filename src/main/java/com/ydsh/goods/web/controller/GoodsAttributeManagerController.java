@@ -1,7 +1,7 @@
 /**
  * @filename:GoodsAttributeManagerController 2019-06-12 10:08:37
  * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.controller;
@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
  * </P>
  * 
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  *
  */
 @Api(description = "商品销售属性管理", value = "商品销售属性管理")

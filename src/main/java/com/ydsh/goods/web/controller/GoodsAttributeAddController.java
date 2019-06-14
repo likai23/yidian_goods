@@ -1,11 +1,12 @@
 /**
  * @filename:GoodsAttributeAddController 2019-06-12 10:08:37
  * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ydsh.generator.common.JsonResult;
@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
  * </P>
  * 
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  *
  */
 @Api(description = "商品销售属性管理新增属性", value = "商品销售属性管理新增属性")
@@ -63,18 +63,21 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 	 * @explain 分页条件查询用户   
 	 * @param   pageParam
 	 * @return  JsonResult
-	 * @author  姚仲杰
+	 * @author  戴艺辉
 	 * @time    2019-06-12 10:08:37
 	 */
 	@RequestMapping(value = "/getAttributePages", method = RequestMethod.GET)
-	@ApiOperation(value = "分页查询销售属性主表和副表", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
+	@ApiOperation(value = "分页查询销售属性主表和副表", notes = "分页查询返回[IPage<T>],作者：")
 	public JsonResult<IPage<Map<String, Object>>> getAttributeAddWtithManagerPages(PageParam<Map<String, Object>> pageParam) {
+		if(pageParam.getPageSize()>500) {
+			logger.error("分页最大限制500，" +pageParam);
+			result.error("分页最大限制500");
+		}
 		Page<Map<String, Object>> page = new Page<Map<String, Object>>(pageParam.getPageNum(), pageParam.getPageSize());
 		JsonResult<IPage<Map<String, Object>>> returnPage = new JsonResult<IPage<Map<String, Object>>>();
-		QueryWrapper<Map<String, Object>> queryWrapper = new QueryWrapper<Map<String, Object>>();
-		queryWrapper.setEntity(pageParam.getParam());
+		Map<String, Object> queryWrapper = new HashMap<String, Object>();
 		// 分页数据
- 		Page<Map<String, Object>> pageData = goodsAttributeAddService.selectAttributeAddWithManager(page, queryWrapper);
+ 		IPage<Map<String, Object>> pageData = goodsAttributeAddService.selectAttributeAddWithManager(page, queryWrapper);
 		result.success("添加成功");
 		returnPage.success(pageData);
 
@@ -93,7 +96,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 	 * @return
 	 */
 	@RequestMapping(value = "/saveAttributeSlave", method = RequestMethod.POST)
-	@ApiOperation(value = "新增商品销售副属性", notes = "作者：戴艺辉")
+	@ApiOperation(value = "新增商品销售副属性", notes = "作者：")
 	public JsonResult<Object> saveAttributeSlave(@RequestBody GoodsAttributeAdd param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		if (param.getGamId() == null || param.getAttributeValue() == null || param.getAttributeOrder() == null
@@ -116,7 +119,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 	 * @return
 	 */
 	@RequestMapping(value = "/updateAttributeSlave", method = RequestMethod.POST)
-	@ApiOperation(value = "修改商品销售副属性", notes = "作者：戴艺辉")
+	@ApiOperation(value = "修改商品销售副属性", notes = "作者：")
 	public JsonResult<Object> updateAttributeSlave(@RequestBody Map<String, Object> param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		String updateSign = TextUtils.getMapForKeyToString(param, "updateSign");

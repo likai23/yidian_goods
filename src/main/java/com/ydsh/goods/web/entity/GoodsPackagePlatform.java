@@ -1,7 +1,7 @@
 /**
- * @filename:GoodsPackagePlatform 2019-06-12 10:08:38
- * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * @filename:GoodsPackagePlatform 2019-06-14 09:24:41
+ * @project ydsh-saas-service-goods  V1.0
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.entity;
@@ -23,7 +23,7 @@ import java.io.Serializable;
  * 
  * <p>说明： 套餐对应平台表实体类</P>
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  * 
  */
 @Data
@@ -31,7 +31,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class GoodsPackagePlatform implements Serializable {
 
-	private static final long serialVersionUID = 1560305318499L;
+	private static final long serialVersionUID = 1560475481330L;
 	
 	@TableId(value = "id", type = IdType.AUTO)
 	@ApiModelProperty(name = "id" , value = "主键ID")

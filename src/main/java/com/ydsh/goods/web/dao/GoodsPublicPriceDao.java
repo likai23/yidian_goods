@@ -1,7 +1,7 @@
 /**
  * @filename:GoodsPublicPriceDao 2019-06-12 10:08:38
  * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.dao;
@@ -21,7 +21,7 @@ import com.ydsh.goods.web.entity.GoodsPublicPrice;
  * </p>
  * 
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  * 
  */
 @Mapper

@@ -1,7 +1,7 @@
 /**
  * @filename:GoodsPackagePlatformDao 2019-06-12 10:08:38
  * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.dao;
@@ -15,7 +15,7 @@ import com.ydsh.goods.web.entity.GoodsPackagePlatform;
  * 
  * <p>说明： 套餐对应平台表数据访问层</p>
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  * 
  */
 @Mapper

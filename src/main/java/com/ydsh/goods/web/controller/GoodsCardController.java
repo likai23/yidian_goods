@@ -1,7 +1,7 @@
 /**
  * @filename:GoodsCardController 2019-06-12 10:08:37
  * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.controller;
@@ -55,7 +55,7 @@ import lombok.extern.slf4j.Slf4j;
  * </P>
  * 
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  *
  */
 @Api(description = "卡券商品表", value = "卡券商品表")
@@ -92,16 +92,20 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	 * @explain 分页条件查询用户
 	 * @param pageParam
 	 * @return JsonResult
-	 * @author 姚仲杰
+	 * @author 戴艺辉
 	 * @time 2019-06-12 10:08:37
 	 */
 	@RequestMapping(value = "/getCardAndSKUPages", method = RequestMethod.GET)
 	@ApiOperation(value = "卡券商品分页查询", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
 	public JsonResult<IPage<Map<String, Object>>> getCardAndSKUPages(PageParam<Map<String, Object>> pageParam) {
 		JsonResult<IPage<Map<String, Object>>> returnPage = new JsonResult<IPage<Map<String, Object>>>();
+		if(pageParam.getPageSize()>500) {
+			logger.error("分页最大限制500，" +pageParam);
+			returnPage.error("分页最大限制500");
+			return returnPage;
+		}
 		Page<Map<String, Object>> page = new Page<Map<String, Object>>(pageParam.getPageNum(), pageParam.getPageSize());
-		QueryWrapper<Map<String, Object>> queryWrapper = new QueryWrapper<Map<String, Object>>();
-		queryWrapper.setEntity(pageParam.getParam());
+		Map<String, Object> queryWrapper = new HashMap<String, Object>();
 		// 分页数据
 		Page<Map<String, Object>> pageData = goodsCardService.selectCardAndSKUPage(page, queryWrapper);
 		result.success("添加成功");

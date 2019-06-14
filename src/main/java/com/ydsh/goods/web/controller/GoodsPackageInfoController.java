@@ -1,7 +1,7 @@
 /**
  * @filename:GoodsPackageInfoController 2019-06-12 10:08:38
  * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.controller;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * 
  * <p>说明： 套餐详情表:对应的skuAPI接口层</P>
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  *
  */
 @Api(description = "套餐详情表:对应的sku",value="套餐详情表:对应的sku" )

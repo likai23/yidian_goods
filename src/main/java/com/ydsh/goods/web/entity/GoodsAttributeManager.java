@@ -1,12 +1,11 @@
 /**
- * @filename:GoodsAttributeManager 2019-06-12 10:08:37
- * @project ydsh-saas-service-demo  V1.0
- * Copyright(c) 2020 姚仲杰 Co. Ltd. 
+ * @filename:GoodsAttributeManager 2019-06-14 09:24:40
+ * @project ydsh-saas-service-goods  V1.0
+ * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
 package com.ydsh.goods.web.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -24,7 +23,7 @@ import java.io.Serializable;
  * 
  * <p>说明： 商品销售属性管理实体类</P>
  * @version: V1.0
- * @author: 姚仲杰
+ * @author: 戴艺辉
  * 
  */
 @Data
@@ -32,7 +31,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class GoodsAttributeManager implements Serializable {
 
-	private static final long serialVersionUID = 1560305317873L;
+	private static final long serialVersionUID = 1560475480843L;
 	
 	@TableId(value = "id", type = IdType.AUTO)
 	@ApiModelProperty(name = "id" , value = "主键ID")
