@@ -15,6 +15,7 @@ import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 /**   
  * <p>自定义service写在这里</p>
@@ -34,5 +35,5 @@ public interface GoodsCardService extends IService<GoodsCard> {
 	* @param @return
 	* @return
 	 */
-	 IPage<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, @Param(Constants.WRAPPER) Wrapper<Map<String, Object>> queryWrapper);
+	 Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, @Param(Constants.WRAPPER) Wrapper<Map<String, Object>> queryWrapper);
 }

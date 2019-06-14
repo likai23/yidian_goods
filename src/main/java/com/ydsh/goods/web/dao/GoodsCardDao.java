@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.Map;
 
@@ -31,7 +32,7 @@ import com.ydsh.goods.web.entity.GoodsCard;
 public interface GoodsCardDao extends BaseMapper<GoodsCard> {
 	/**
 	 * 
-	* 连表查询 卡券商品和卡券sku
+	* 连表查询 销售属性主表和副表
 	*
 	* @param @param page
 	* @param @param queryWrapper
@@ -45,7 +46,7 @@ public interface GoodsCardDao extends BaseMapper<GoodsCard> {
 			+ "gcs.id AS gcsId,gcs.gcs_no AS gcsNo,gcs.sku_name AS skuName,gcs.gaa_id AS gaaId,gcs.sd_id AS sdId,gcs.default_amount AS defaultAmount,gcs.noticket_amount AS noticketAmount,"
 			+ "gcs.ticket_someamount AS ticketSomeamount,gcs.noticket_someamount AS noticketSomeamount,gcs.ticket_amount AS ticketAmount  "
 			+ "FROM " + "goods_card gc,goods_card_sku gcs " + "WHERE " + "gc.`id`=gcs.`gc_id`")
-	  IPage<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, @Param(Constants.WRAPPER) Wrapper<Map<String, Object>> queryWrapper);
+	  Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, @Param(Constants.WRAPPER) Wrapper<Map<String, Object>> queryWrapper);
 	
 	
 	

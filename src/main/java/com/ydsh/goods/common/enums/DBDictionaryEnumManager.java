@@ -47,7 +47,7 @@ public enum DBDictionaryEnumManager {
 	bill_detail_3("3","已扣款"),
 	
 	/**
-	 * 商户状态 
+	 * 启用状态 
 	 */
 	user_status_0("0","启用"),
 	user_status_1("1","禁用"),

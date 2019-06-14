@@ -6,8 +6,17 @@
  */
 package com.ydsh.goods.web.service;
 
-import com.ydsh.goods.web.entity.GoodsAttributeAdd;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ydsh.goods.web.entity.GoodsAttributeAdd;
 /**   
  * <p>自定义service写在这里</p>
  * 
@@ -18,4 +27,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface GoodsAttributeAddService extends IService<GoodsAttributeAdd> {
 	
+	/**
+	 * 
+	* 连表查询 销售属性主表和副表
+	*
+	* @param @param page
+	* @param @param queryWrapper
+	* @param @return
+	* @return
+	 */
+	Page<Map<String, Object>>  selectAttributeAddWithManager(IPage<Map<String, Object>> page, @Param(Constants.WRAPPER) Wrapper<Map<String, Object>> queryWrapper);
 }

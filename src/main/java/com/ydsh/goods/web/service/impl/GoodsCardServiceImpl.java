@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**   
@@ -42,7 +43,7 @@ public class GoodsCardServiceImpl  extends ServiceImpl<GoodsCardDao, GoodsCard> 
 	* @return
 	 */
 	@Override
-	public IPage<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page,
+	public Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page,
 			Wrapper<Map<String, Object>> queryWrapper) {
 		// TODO Auto-generated method stub
 		return goodsCardDao.selectCardAndSKUPage(page, queryWrapper);

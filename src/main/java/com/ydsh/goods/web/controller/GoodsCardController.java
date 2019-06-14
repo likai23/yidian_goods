@@ -103,8 +103,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		QueryWrapper<Map<String, Object>> queryWrapper = new QueryWrapper<Map<String, Object>>();
 		queryWrapper.setEntity(pageParam.getParam());
 		// 分页数据
-		IPage<Map<String, Object>> pageData = goodsCardService.selectCardAndSKUPage(page, queryWrapper);
-		result.setCode(String.valueOf(SuccessCode.SYS_SUCCESS.getCode()));
+		Page<Map<String, Object>> pageData = goodsCardService.selectCardAndSKUPage(page, queryWrapper);
 		result.success("添加成功");
 		returnPage.success(pageData);
 
@@ -190,7 +189,6 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 				}
 			}
 		}
-		result.setCode(String.valueOf(SuccessCode.SYS_SUCCESS.getCode()));
 		result.success("添加成功");
 		return result;
 	}
@@ -239,7 +237,6 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 				map.put("skuCardPlatformInfoList", goodsCardSkuPlatforminfoList);
 			}
 			bossGoodsCard.put("skuCardList", skulist);
-			result.setCode(String.valueOf(SuccessCode.SYS_SUCCESS.getCode()));
 			result.success("添加成功");
 			result.setData(bossGoodsCard);
 
@@ -268,12 +265,11 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 					map.put("skuCardPlatformInfoList", goodsCardSkuPlatforminfoList);
 				}
 				bossGoodsCard.put("skuCardList", skulist);
-				result.setCode(String.valueOf(SuccessCode.SYS_SUCCESS.getCode()));
 				result.success("添加成功");
 				result.setData(bossGoodsCard);
 			} else {
-				result.setCode(String.valueOf(ErrorCode.ILLEGAL_ARGUMENT.getCode()));
-				result.success("不为待审核或审核不通过状态，不允许修改！");
+				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				result.error("不为待审核或审核不通过状态，不允许修改！");
 			}
 
 		}
@@ -319,7 +315,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 			Map<String, Object> bossGoodsCardSkuMap = (Map<String, Object>) param.get("skuCardList");
 			// 更新sku平台图片详情
 			if (bossGoodsCardSkuMap == null || bossGoodsCardSkuMap.isEmpty()) {
-				result.setCode(String.valueOf(ErrorCode.ILLEGAL_ARGUMENT.getCode()));
+				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				result.error("sku信息不存在");
 			} else {
 				// 更新卡券sku详情
@@ -349,7 +345,6 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 					}
 				}
 			}
-			result.setCode(String.valueOf(SuccessCode.SYS_SUCCESS.getCode()));
 			result.success("修改成功");
 		}
 		// 上架，下架，作废
@@ -372,11 +367,10 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 					goodsCard.setId(Long.parseLong(id));
 					goodsCard.setGoodStatus(status);
 					goodsCardService.updateById(goodsCard);
-					result.setCode(String.valueOf(ErrorCode.SYS_EXCEPTION.getCode()));
 					result.success("修改成功");
 				} else {
-					result.setCode(String.valueOf(ErrorCode.ILLEGAL_ARGUMENT.getCode()));
-					result.success("修改失败，状态不为下架不能上架");
+					result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					result.error("修改失败，状态不为下架不能上架");
 				}
 			}
 			// 下架,,只能修改上架的
@@ -386,29 +380,27 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 					goodsCard.setId(Long.parseLong(id));
 					goodsCard.setGoodStatus(status);
 					goodsCardService.updateById(goodsCard);
-					result.setCode(String.valueOf(ErrorCode.SYS_EXCEPTION.getCode()));
 					result.success("修改成功");
 				} else {
-					result.setCode(String.valueOf(ErrorCode.ILLEGAL_ARGUMENT.getCode()));
+					result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					result.success("修改失败，状态不为上架不能下架");
 				}
 			}
 			// 作废,,只能修改非作废的
 			else if (status.equals(DBDictionaryEnumManager.goods_2.getkey())) {
 				if (goodsCardCheck.getGoodStatus().equals(DBDictionaryEnumManager.goods_2.getkey())) {
-					result.setCode(String.valueOf(ErrorCode.ILLEGAL_ARGUMENT.getCode()));
-					result.success("修改失败，状态不为下架不能启用");
+					result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+					result.error("修改失败，状态不为下架不能启用");
 				} else {
 					GoodsCard goodsCard = new GoodsCard();
 					goodsCard.setId(Long.parseLong(id));
 					goodsCard.setGoodStatus(status);
 					goodsCardService.updateById(goodsCard);
-					result.setCode(String.valueOf(SuccessCode.SYS_SUCCESS.getCode()));
 					result.success("修改成功");
 				}
 			} else {
-				result.setCode(String.valueOf(ErrorCode.ILLEGAL_ARGUMENT.getCode()));
-				result.success("修改失败，参数异常");
+				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				result.error("修改失败，参数异常");
 			}
 		}
 		// 审核
@@ -431,11 +423,11 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 				goodsCard.setReviewStatus(reviewStatus);
 				goodsCard.setReviewRemarks(reviewRemarks);
 				goodsCardService.updateById(goodsCard);
-				result.setCode(String.valueOf(SuccessCode.SYS_SUCCESS.getCode()));
 				result.success("审核成功");
 			} else {
-				result.setCode(String.valueOf(ErrorCode.ILLEGAL_ARGUMENT.getCode()));
-				result.success("修改失败，不为待审核状态不可审核");
+				logger.error("不为禁用状态，不可启用！");
+				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				result.error("不为禁用状态，不可启用！");
 			}
 
 		}

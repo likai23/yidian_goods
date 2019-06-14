@@ -5,7 +5,7 @@ package com.ydsh.goods.common.enums;
  * @Date 2019/6/2 11:23
  **/
 public enum SuccessCode {
-    SYS_SUCCESS(200, "系统异常,操作失败"),
+    SYS_SUCCESS(200, "操作成功"),
     
     ;
     private int code;
