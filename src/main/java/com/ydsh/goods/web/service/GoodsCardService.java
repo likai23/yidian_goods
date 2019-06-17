@@ -6,17 +6,14 @@
  */
 package com.ydsh.goods.web.service;
 
-import com.ydsh.goods.web.entity.GoodsCard;
-
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ydsh.goods.web.entity.GoodsCard;
+import com.ydsh.goods.web.entity.ext.GoodsCardAndSku;
 /**   
  * <p>自定义service写在这里</p>
  * 
@@ -35,5 +32,5 @@ public interface GoodsCardService extends IService<GoodsCard> {
 	* @param @return
 	* @return
 	 */
-	 Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page,  Map<String, Object> queryWrapper);
+	 Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, Wrapper<GoodsCardAndSku> queryWrapper);
 }

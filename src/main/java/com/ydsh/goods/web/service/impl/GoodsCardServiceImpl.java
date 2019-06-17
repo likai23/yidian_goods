@@ -7,6 +7,7 @@
 package com.ydsh.goods.web.service.impl;
 
 import com.ydsh.goods.web.entity.GoodsCard;
+import com.ydsh.goods.web.entity.ext.GoodsCardAndSku;
 import com.ydsh.goods.web.dao.GoodsCardDao;
 import com.ydsh.goods.web.service.GoodsCardService;
 
@@ -44,7 +45,7 @@ public class GoodsCardServiceImpl  extends ServiceImpl<GoodsCardDao, GoodsCard> 
 	 */
 	@Override
 	public Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page,
-			 Map<String, Object> queryWrapper) {
+			Wrapper<GoodsCardAndSku> queryWrapper) {
 		// TODO Auto-generated method stub
 		return goodsCardDao.selectCardAndSKUPage(page, queryWrapper);
 	}

@@ -14,6 +14,7 @@ import com.ydsh.goods.common.exception.SystemException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsAttributeManager;
+import com.ydsh.goods.web.entity.ext.GoodsAttributeManagerExt;
 import com.ydsh.goods.web.service.GoodsAttributeManagerService;
 
 import java.sql.Timestamp;
@@ -91,15 +92,15 @@ public class GoodsAttributeManagerController
 	 */
 	@RequestMapping(value = "/updateAttributeMain", method = RequestMethod.POST)
 	@ApiOperation(value = "添加商品销售主属性", notes = "作者：戴艺辉")
-	public JsonResult<Object> updateAttributeMain(@RequestBody Map<String, Object> param) {
+	public JsonResult<Object> updateAttributeMain(@RequestBody GoodsAttributeManagerExt param) {
 		JsonResult<Object> result = new JsonResult<Object>();
-		String updateSign = TextUtils.getMapForKeyToString(param, "updateSign");
+		String updateSign = param.getUpdateSign();
 		//修改商品主表基本信息
 		if (updateSign.equals("updateAttributeMain")) {
-			String id = TextUtils.getMapForKeyToString(param, "id");
-			String gcId = TextUtils.getMapForKeyToString(param, "gcId");
-			String status = TextUtils.getMapForKeyToString(param, "status");
-			String attributeName = TextUtils.getMapForKeyToString(param, "attributeName");
+			String id = String.valueOf(param.getId());
+			String gcId = String.valueOf(param.getGcId());
+			String status = String.valueOf(param.getStatus());
+			String attributeName = param.getAttributeName();
 			if (TextUtils.isEmptys(id, gcId, status, attributeName)) {
 				logger.error("请求参数为空，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
@@ -119,8 +120,8 @@ public class GoodsAttributeManagerController
 			result.success("修改成功");
 		}
 		else if(updateSign.equals("updateAttributeMainWithStatus")) {
-			String id = TextUtils.getMapForKeyToString(param, "id");
-			String status = TextUtils.getMapForKeyToString(param, "status");
+			String id = String.valueOf(param.getId());
+			String status = String.valueOf(param.getStatus());
 			if (TextUtils.isEmptys(id, status)) {
 				logger.error("请求参数为空，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());

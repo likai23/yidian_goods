@@ -10,19 +10,12 @@ import com.ydsh.goods.web.entity.GoodsAttributeAdd;
 import com.ydsh.goods.web.dao.GoodsAttributeAddDao;
 import com.ydsh.goods.web.service.GoodsAttributeAddService;
 
-import freemarker.core.ReturnInstruction.Return;
 
-import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**   

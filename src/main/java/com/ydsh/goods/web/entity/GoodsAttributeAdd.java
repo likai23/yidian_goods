@@ -6,6 +6,7 @@
  */
 package com.ydsh.goods.web.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -28,7 +29,6 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 public class GoodsAttributeAdd implements Serializable {
 
 	private static final long serialVersionUID = 1560475480492L;

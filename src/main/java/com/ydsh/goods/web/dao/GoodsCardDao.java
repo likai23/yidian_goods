@@ -16,9 +16,9 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 import com.ydsh.goods.web.entity.GoodsCard;
+import com.ydsh.goods.web.entity.ext.GoodsCardAndSku;
 
 /**   
  * <p>自定义mapper写在这里</p>
@@ -39,7 +39,7 @@ public interface GoodsCardDao extends BaseMapper<GoodsCard> {
 	* @param @return
 	* @return
 	 */
-	  Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, @Param("queryWrapper") Map<String, Object> queryWrapper);
+	  Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page,@Param(Constants.WRAPPER) Wrapper<GoodsCardAndSku> queryWrapper);
 	
 	
 	

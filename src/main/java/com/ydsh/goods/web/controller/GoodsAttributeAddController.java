@@ -27,6 +27,7 @@ import com.ydsh.goods.common.exception.SystemException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsAttributeAdd;
+import com.ydsh.goods.web.entity.ext.GoodsAttributeAddExt;
 import com.ydsh.goods.web.service.GoodsAttributeAddService;
 
 import io.swagger.annotations.Api;
@@ -56,36 +57,34 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 
 	@Autowired
 	private GoodsAttributeAddService goodsAttributeAddService;
-	
-	
-	
+
 	/**
-	 * @explain 分页条件查询用户   
-	 * @param   pageParam
-	 * @return  JsonResult
-	 * @author  戴艺辉
-	 * @time    2019-06-12 10:08:37
+	 * @explain 分页条件查询用户
+	 * @param pageParam
+	 * @return JsonResult
+	 * @author 戴艺辉
+	 * @time 2019-06-12 10:08:37
 	 */
 	@RequestMapping(value = "/getAttributePages", method = RequestMethod.GET)
 	@ApiOperation(value = "分页查询销售属性主表和副表", notes = "分页查询返回[IPage<T>],作者：")
-	public JsonResult<IPage<Map<String, Object>>> getAttributeAddWtithManagerPages(PageParam<Map<String, Object>> pageParam) {
-		if(pageParam.getPageSize()>500) {
-			logger.error("分页最大限制500，" +pageParam);
+	public JsonResult<IPage<Map<String, Object>>> getAttributeAddWtithManagerPages(
+			PageParam<GoodsAttributeAddExt> pageParam) {
+		if (pageParam.getPageSize() > 500) {
+			logger.error("分页最大限制500，" + pageParam);
 			result.error("分页最大限制500");
 		}
 		Page<Map<String, Object>> page = new Page<Map<String, Object>>(pageParam.getPageNum(), pageParam.getPageSize());
 		JsonResult<IPage<Map<String, Object>>> returnPage = new JsonResult<IPage<Map<String, Object>>>();
 		Map<String, Object> queryWrapper = new HashMap<String, Object>();
 		// 分页数据
- 		IPage<Map<String, Object>> pageData = goodsAttributeAddService.selectAttributeAddWithManager(page, queryWrapper);
+		IPage<Map<String, Object>> pageData = goodsAttributeAddService.selectAttributeAddWithManager(page,
+				queryWrapper);
 		result.success("添加成功");
 		returnPage.success(pageData);
 
 		return returnPage;
 	}
 
-	
-	
 	/**
 	 * 
 	 * 新增商品销售副属性
@@ -120,19 +119,19 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 	 */
 	@RequestMapping(value = "/updateAttributeSlave", method = RequestMethod.POST)
 	@ApiOperation(value = "修改商品销售副属性", notes = "作者：")
-	public JsonResult<Object> updateAttributeSlave(@RequestBody Map<String, Object> param) {
+	public JsonResult<Object> updateAttributeSlave(@RequestBody GoodsAttributeAddExt param) {
 		JsonResult<Object> result = new JsonResult<Object>();
-		String updateSign = TextUtils.getMapForKeyToString(param, "updateSign");
+		String updateSign = param.getUpdateSign();
 		if (TextUtils.isEmpty(updateSign)) {
 			logger.error("请求参数为空，" + param);
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
 		}
 		// 修改商品销售副属性基本信息
 		if (updateSign.equals("updateAttributeSlave")) {
-			String id = TextUtils.getMapForKeyToString(param, "id");
-			String attributeValue = TextUtils.getMapForKeyToString(param, "attributeValue");
-			String attributeOrder = TextUtils.getMapForKeyToString(param, "attributeOrder");
-			String status = TextUtils.getMapForKeyToString(param, "status");
+			String id = String.valueOf(param.getId());
+			String attributeValue = param.getAttributeValue();
+			String attributeOrder = String.valueOf(param.getAttributeOrder());
+			String status = String.valueOf(param.getStatus());
 			if (TextUtils.isEmptys(id, attributeValue, attributeOrder, status)) {
 				logger.error("请求参数为空，" + param);
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
@@ -147,8 +146,8 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 		}
 		// 修改商品销售副属性状态
 		else if (updateSign.equals("updateAttributeSlaveWithStatus")) {
-			String id = TextUtils.getMapForKeyToString(param, "id");
-			String status = TextUtils.getMapForKeyToString(param, "status");
+			String id = String.valueOf(param.getId());
+			String status = String.valueOf(param.getStatus());
 			if (TextUtils.isEmptys(id, status)) {
 				logger.error("请求参数为空，" + param);
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
@@ -158,7 +157,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 				logger.error("请求参数异常，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
 			}
-			//启用
+			// 启用
 			if (status.equals(DBDictionaryEnumManager.user_status_0.getkey())) {
 				if (goodsAttributeAddCheck.getStatus() == Integer
 						.parseInt(DBDictionaryEnumManager.user_status_1.getkey())) {
@@ -167,13 +166,13 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 					goodsAttributeAdd.setStatus(Integer.parseInt(status));
 					baseService.updateById(goodsAttributeAdd);
 					result.success("修改成功！");
-				}else {
+				} else {
 					logger.error("不是禁用状态，不可修改为启用！");
-					result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					result.error("不是禁用状态，不可修改为启用！");
+					return result;
 				}
 			}
-			//禁用
+			// 禁用
 			else if (status.equals(DBDictionaryEnumManager.user_status_1.getkey())) {
 				if (goodsAttributeAddCheck.getStatus() == Integer
 						.parseInt(DBDictionaryEnumManager.user_status_0.getkey())) {
@@ -182,13 +181,12 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 					goodsAttributeAdd.setStatus(Integer.parseInt(status));
 					baseService.updateById(goodsAttributeAdd);
 					result.success("修改成功！");
-				}else {
+				} else {
 					logger.error("不是启用状态，不可修改为禁用！");
-					result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 					result.error("不是启用状态，不可修改为禁用！");
+					return result;
 				}
 			}
-
 		} else {
 			logger.error("请求参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
