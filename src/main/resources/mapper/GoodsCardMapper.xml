@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ydsh.goods.web.dao.GoodsCardDao">
+
+	<select id="selectCardAndSKUPage"
+		parameterType="com.ydsh.goods.web.entity.ext.GoodsCardAndSku" resultType="java.util.Map">
+		SELECT
+		   gc.id AS gcId,
+		   gc.gc_no AS gcNo,
+		   gc.good_name AS goodName,
+		   gc.good_forshort AS goodForshort,
+		   gc.good_attribute AS goodAttribute,
+		   gc.good_type AS goodType,
+		   gc.good_property AS goodProperty,
+		   gc.good_shape AS goodShape,
+		   gc.good_category_id AS goodCategoryId,
+		   gc.good_status AS goodStatus,
+		   gc.review_id AS reviewId,
+		   gc.review_status AS reviewStatus,
+		   gc.review_remarks AS reviewRemarks,
+		   gc.create_id AS createId,
+		   gc.update_id AS updateId,
+		   gc.create_time AS createTime,
+		   gc.update_time AS updateTime,
+		   gcs.id AS gcsId,
+		   gcs.gcs_no AS gcsNo,
+		   gcs.sku_name AS skuName,
+		   gcs.gaa_id AS gaaId,
+		   gcs.sd_id AS sdId,
+		   gcs.default_amount AS defaultAmount,
+		   gcs.noticket_amount AS noticketAmount,
+		   gcs.ticket_someamount AS ticketSomeamount,
+		   gcs.noticket_someamount AS noticketSomeamount,
+		   gcs.ticket_amount AS ticketAmount
+		FROM
+		   goods_card gc,
+		   goods_card_sku gcs
+		<where>
+		   gc.`id` = gcs.`gc_id`
+		    <if test=" gcNo!= null and gcNo!= ''">
+                       and   gc.gc_no  like concat('%', #{gcNo}, '%')
+             </if>
+             <if test=" gcsNo!= null">
+                       and   gcs.`gcs_no`  like concat('%', #{gcsNo}, '%')
+             </if>
+             <if test=" goodName!= null">
+                       and   gc.`good_name`  like concat('%', #{goodName}, '%')
+             </if>
+             <if test=" goodType!= null">
+                       and   gc.`good_type`  =  #{goodType}
+             </if>
+             <if test=" goodProperty!= null">
+                       and   gc.`good_property`  =  #{goodProperty}
+             </if>
+             <if test=" goodShape!= null">
+                       and   gc.`good_shape` =  #{goodShape}
+             </if>
+             <if test=" goodCategoryId!= null">
+                       and   gc.`good_category_id` =  #{goodCategoryId}
+             </if>
+             <if test=" goodStatus!= null">
+                       and   gc.`good_status` =  #{goodStatus}
+             </if>
+             <if test=" reviewStatus!= null">
+                       and   gc.`review_status` =  #{reviewStatus}
+             </if> 
+		</where>
+	</select>
+
+
+</mapper>

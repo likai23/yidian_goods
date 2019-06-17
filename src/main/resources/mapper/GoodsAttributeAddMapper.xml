@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ydsh.goods.web.dao.GoodsAttributeAddDao">
+
+	<select id="selectAttributeAddWithManager" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		   gam.id AS gamId,
+		   gam.attribute_name AS attributeName,
+		   gam.`gc_id` AS gcId,
+		   gam.`create_time` AS gamcreateTime,
+		   gam.`status` AS gamStatus,
+		   gaa.`id` AS gaaId,
+		   gaa.`attribute_value` AS attributeValue,
+		   gaa.`attribute_order` AS attributeOrder,
+		   gaa.`create_time` AS gaacreateTime
+		FROM
+		   goods_attribute_manager gam,
+		   goods_attribute_add gaa
+		<where>
+		   gam.`id` = gaa.`gam_id`
+		</where> 
+	</select>
+</mapper>

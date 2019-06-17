@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ydsh.goods.web.dao.GoodsCategoryDao">
+
+	<select id="getGoodsCategoryPages" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		  id,
+		  parent_id,
+		  (SELECT category_name FROM goods_category WHERE id=gc.parent_id) AS parentName,
+		  category_id,
+		  category_name,
+		  category_order,
+		  create_id,
+		  `status`,
+		  create_time
+		FROM
+		  goods_category gc
+	</select>
+</mapper>
