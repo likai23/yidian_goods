@@ -14,7 +14,7 @@ import com.ydsh.goods.common.exception.SystemException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsAttributeManager;
-import com.ydsh.goods.web.entity.ext.GoodsAttributeManagerExt;
+import com.ydsh.goods.web.entity.dto.GoodsAttributeManagerDto;
 import com.ydsh.goods.web.service.GoodsAttributeManagerService;
 
 import java.sql.Timestamp;
@@ -92,7 +92,7 @@ public class GoodsAttributeManagerController
 	 */
 	@RequestMapping(value = "/updateAttributeMain", method = RequestMethod.POST)
 	@ApiOperation(value = "添加商品销售主属性", notes = "作者：戴艺辉")
-	public JsonResult<Object> updateAttributeMain(@RequestBody GoodsAttributeManagerExt param) {
+	public JsonResult<Object> updateAttributeMain(@RequestBody GoodsAttributeManagerDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		String updateSign = param.getUpdateSign();
 		//修改商品主表基本信息

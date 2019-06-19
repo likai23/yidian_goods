@@ -31,7 +31,7 @@ public enum DBDictionaryEnumManager {
 	no("1","否"),
 	
 	/**
-	 * 账单明细
+	 * *账单明细
 	 */
 	bill_state_0("0","未生成"),
 	bill_state_1("1","已生成"),
@@ -47,13 +47,13 @@ public enum DBDictionaryEnumManager {
 	bill_detail_3("3","已扣款"),
 	
 	/**
-	 * 启用状态 
+	 * *启用状态 
 	 */
 	user_status_0("0","启用"),
 	user_status_1("1","禁用"),
 	user_status_2("2","黑名单"),
 	/**
-	 * 商品状态
+	 * *商品状态
 	 */
 	goods_0("0","上架"),
 	goods_1("1","下架"),
@@ -70,16 +70,24 @@ public enum DBDictionaryEnumManager {
 	coupon_code_5("5","已作废"),
 	
 	/**
-	 * 删除标志
+	 * *删除标志
 	 */
 	invalid("0","无效"),
 	valid("1","有效"),
 	
 	/**
-	 *商品有效期类型
+	 * *商品有效期类型
 	 */
 	fixed_valid_day("0","固定有效期 "),
 	valid_day("1","有效天数 "),
+	
+	/**
+	 * *商品类型
+	 */
+	goods_card("0","卡券商品"),
+	package_card("1","套餐商品"),
+	
+	
 	;
 
 	/** 枚举值 */

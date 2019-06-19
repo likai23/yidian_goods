@@ -36,8 +36,9 @@ import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsPackage;
 import com.ydsh.goods.web.entity.GoodsPackageInfo;
 import com.ydsh.goods.web.entity.GoodsPackagePlatform;
-import com.ydsh.goods.web.entity.ext.GoodsPackageExt;
-import com.ydsh.goods.web.entity.ext.LookAndUpdateInGoodsPackage;
+import com.ydsh.goods.web.entity.dto.GoodsPackageAndSkuDto;
+import com.ydsh.goods.web.entity.dto.GoodsPackageDto;
+import com.ydsh.goods.web.entity.dto.LookAndUpdateInGoodsPackageDto;
 import com.ydsh.goods.web.service.GoodsPackageInfoService;
 import com.ydsh.goods.web.service.GoodsPackagePlatformService;
 import com.ydsh.goods.web.service.GoodsPackageService;
@@ -108,6 +109,39 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		
 		return returnPage;
 	}
+    
+	/**
+	 * 
+	* 套餐商品和关联sku分页查询
+	*
+	* @param @param pageParam
+	* @param @return
+	* @return
+	 */
+    @RequestMapping(value = "/getPackageAndSkuPages",method = RequestMethod.GET)
+	@ApiOperation(value = "套餐商品和关联sku分页查询", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
+	public JsonResult<Object> getPackageAndSkuPages(@RequestBody PageParam<GoodsPackageAndSkuDto> pageParam){
+		JsonResult<Object> returnPage=new JsonResult<Object>();
+		Page<Map<String,Object>> page=new Page<Map<String,Object>>(pageParam.getPageNum(),pageParam.getPageSize());
+		if(pageParam.getPageSize()>500) {
+			logger.error("分页最大限制500，" +pageParam);
+			returnPage.error("分页最大限制500");
+			return returnPage;
+		}
+		QueryWrapper<GoodsPackageAndSkuDto> queryWrapper =new QueryWrapper<GoodsPackageAndSkuDto>();
+		queryWrapper.setEntity(pageParam.getParam());
+		if(queryWrapper.getEntity()==null) {
+			queryWrapper.setEntity(new GoodsPackageAndSkuDto());
+		}
+		//分页数据
+		IPage<GoodsPackageAndSkuDto> pageData=baseService.getPackageAndSkuPages(page, queryWrapper.getEntity());
+		
+		
+		returnPage.success(pageData);
+		
+		return returnPage;
+	}
+    
 	/**
 	 * 
 	 * 保存套餐商品
@@ -120,7 +154,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 	@RequestMapping(value = "/savePackageGoods", method = RequestMethod.POST)
 	@ApiOperation(value = "添加套餐商品", notes = "作者：戴艺辉")
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-	public JsonResult<Object> savePackageGoods(@RequestBody GoodsPackageExt param) {
+	public JsonResult<Object> savePackageGoods(@RequestBody GoodsPackageDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		GoodsPackage bossGoodsPackage = new GoodsPackage();
 		String gpNo = DBKeyGenerator.generatorDBKey(DBBusinessKeyTypeEnums.CP, null);
@@ -188,7 +222,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 	@RequestMapping(value = "/updatePackageGoods", method = RequestMethod.POST)
 	@ApiOperation(value = "修改套餐商品", notes = "作者：戴艺辉")
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-	public JsonResult<Object> updatePackageGoods(@RequestBody GoodsPackageExt param) {
+	public JsonResult<Object> updatePackageGoods(@RequestBody GoodsPackageDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		GoodsPackage bossGoodsPackage = new GoodsPackage();
 		String updateSign = param.getUpdateSign();
@@ -365,7 +399,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 	 */
 	@RequestMapping(value = "/lookPackageGoods", method = RequestMethod.POST)
 	@ApiOperation(value = "查看套餐商品", notes = "作者：戴艺辉")
-	public JsonResult<Object> lookPackageGoods(@RequestBody LookAndUpdateInGoodsPackage param) {
+	public JsonResult<Object> lookPackageGoods(@RequestBody LookAndUpdateInGoodsPackageDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		// 套餐id
 		String id = String.valueOf(param.getId());

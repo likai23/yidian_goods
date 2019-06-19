@@ -6,7 +6,6 @@
  */
 package com.ydsh.goods.web.controller;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +34,8 @@ import com.ydsh.goods.web.entity.GoodsCard;
 import com.ydsh.goods.web.entity.GoodsCardSku;
 import com.ydsh.goods.web.entity.GoodsCardSkuPlatforminfo;
 import com.ydsh.goods.web.entity.GoodsCategory;
-import com.ydsh.goods.web.entity.ext.GoodsCardAndSku;
-import com.ydsh.goods.web.entity.ext.LookOrUpdateTakeInGoodsCard;
+import com.ydsh.goods.web.entity.dto.GoodsCardAndSkuDto;
+import com.ydsh.goods.web.entity.dto.LookOrUpdateTakeInGoodsCardDto;
 import com.ydsh.goods.web.service.GoodsCardService;
 import com.ydsh.goods.web.service.GoodsCardSkuPlatforminfoService;
 import com.ydsh.goods.web.service.GoodsCardSkuService;
@@ -87,7 +86,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	 */
 	@RequestMapping(value = "/getCardAndSKUPages", method = RequestMethod.GET)
 	@ApiOperation(value = "卡券商品分页查询", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
-	public JsonResult<IPage<Map<String, Object>>> getCardAndSKUPages(@RequestBody PageParam<GoodsCardAndSku> pageParam) {
+	public JsonResult<IPage<Map<String, Object>>> getCardAndSKUPages(@RequestBody PageParam<GoodsCardAndSkuDto> pageParam) {
 		JsonResult<IPage<Map<String, Object>>> returnPage = new JsonResult<IPage<Map<String, Object>>>();
 		if(pageParam.getPageSize()>500) {
 			logger.error("分页最大限制500，" +pageParam);
@@ -95,10 +94,13 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 			return returnPage;
 		}
 		Page<Map<String, Object>> page = new Page<Map<String, Object>>(pageParam.getPageNum(), pageParam.getPageSize());
-		QueryWrapper<GoodsCardAndSku> queryWrapper =new QueryWrapper<GoodsCardAndSku>();
+		QueryWrapper<GoodsCardAndSkuDto> queryWrapper =new QueryWrapper<GoodsCardAndSkuDto>();
 		queryWrapper.setEntity(pageParam.getParam());
+		if(queryWrapper.getEntity()==null) {
+			queryWrapper.setEntity(new GoodsCardAndSkuDto());
+		}
 		// 分页数据
-		Page<Map<String, Object>> pageData = goodsCardService.selectCardAndSKUPage(page, queryWrapper);
+		Page<Map<String, Object>> pageData = goodsCardService.selectCardAndSKUPage(page, queryWrapper.getEntity());
 		result.success("添加成功");
 		returnPage.success(pageData);
 
@@ -115,7 +117,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	 */
 	@RequestMapping(value = "/saveCardWithSku", method = RequestMethod.POST)
 	@ApiOperation(value = "添加", notes = "作者：戴艺辉")
-	public JsonResult<Object> saveCardWithSku(@RequestBody GoodsCardAndSku param) {
+	public JsonResult<Object> saveCardWithSku(@RequestBody GoodsCardAndSkuDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		String goodName = param.getGoodName();
 		String goodForshort =param.getGoodForshort();
@@ -206,7 +208,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	 */
 	@RequestMapping(value = "/getCardWithSkuById", method = RequestMethod.POST)
 	@ApiOperation(value = "查看商品和sku", notes = "作者：戴艺辉")
-	public JsonResult<Object> lookCardGoods(@RequestBody LookOrUpdateTakeInGoodsCard param) {
+	public JsonResult<Object> lookCardGoods(@RequestBody LookOrUpdateTakeInGoodsCardDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		// 商品id
 		String bgcId = String.valueOf(param.getGcId());
@@ -292,7 +294,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	 */
 	@RequestMapping(value = "/updateGoodsCard", method = RequestMethod.POST)
 	@ApiOperation(value = "修改卡券商品", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
-	public JsonResult<Object> updateGoodsCard(@RequestBody GoodsCardAndSku param) {
+	public JsonResult<Object> updateGoodsCard(@RequestBody GoodsCardAndSkuDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		String updateSign = param.getUpdateSign();
 		if (TextUtils.isEmpty(updateSign)) {

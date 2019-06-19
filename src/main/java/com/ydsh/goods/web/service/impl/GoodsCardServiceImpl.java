@@ -7,16 +7,16 @@
 package com.ydsh.goods.web.service.impl;
 
 import com.ydsh.goods.web.entity.GoodsCard;
-import com.ydsh.goods.web.entity.ext.GoodsCardAndSku;
+import com.ydsh.goods.web.entity.dto.GoodsCardAndSkuDto;
 import com.ydsh.goods.web.dao.GoodsCardDao;
 import com.ydsh.goods.web.service.GoodsCardService;
 
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -45,9 +45,20 @@ public class GoodsCardServiceImpl  extends ServiceImpl<GoodsCardDao, GoodsCard> 
 	 */
 	@Override
 	public Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page,
-			Wrapper<GoodsCardAndSku> queryWrapper) {
+			GoodsCardAndSkuDto queryWrapper) {
 		// TODO Auto-generated method stub
 		return goodsCardDao.selectCardAndSKUPage(page, queryWrapper);
 	}
-	
+	  /**
+	   * 
+	   * *连表查询 销售属性主表和副表
+	   *
+	   * @param @param page
+	   * @param @param queryWrapper
+	   * @param @return
+	   * @return
+	   */
+	  public Map<String, Object> selectCardAndSKUPage(@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper){
+		  return goodsCardDao.selectCardAndSKUPage(queryWrapper);
+	  }
 }

@@ -4,18 +4,22 @@
  * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
-package com.ydsh.goods.web.entity;
+package com.ydsh.goods.web.entity.dto;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import java.util.Date;
-import org.springframework.format.annotation.DateTimeFormat;
-import java.io.Serializable;
 
 /**   
  * <p>代码自动生成，请勿修改</p>
@@ -28,7 +32,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class GoodsPublicPrice implements Serializable {
+public class GoodsPublicPriceAndGoodsDto implements Serializable {
 
 	private static final long serialVersionUID = 1560475481385L;
 	
@@ -67,4 +71,14 @@ public class GoodsPublicPrice implements Serializable {
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	@ApiModelProperty(name = "updateTime" , value = "修改时间（自动生成, MySQL 5.7+）")
 	private Date updateTime;
+	@ApiModelProperty(name = "gppgId" , value = "商品公共价管理对应商品表的主键ID")
+	private Long gppgId;
+	@ApiModelProperty(name = "gppId" , value = "商品公共价管理表的id")
+	private Long gppId;
+	@ApiModelProperty(name = "goodsId" , value = "sku表id或套餐id")
+	private Long goodsId;
+	@ApiModelProperty(name = "updateSign" , value = "新增为add，修改为update")
+	private String updateSign;
+	@ApiModelProperty(name = "goodsList" , value = "关联商品的list{包含gppId='商品公共价管理表的id',goodsId='sku表id或套餐id',defaultAmount='默认指导价',noticketAmount='不带票指导价',}")                   
+	private List<GoodsPublicPriceGoodsDto> goodsList;
 }

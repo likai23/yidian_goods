@@ -2,5 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ydsh.goods.web.dao.GoodsPackageDao">
 
-
+	<select id="getPackageAndSkuPages" 
+		parameterType="com.ydsh.goods.web.entity.ext.GoodsPackageAndSku"
+		resultType="com.ydsh.goods.web.entity.ext.GoodsPackageAndSku">
+		SELECT
+		   gp.id AS gpId,
+		   gp.`gp_no` ,
+		   gp.`package_name`,
+		   gp.`package_forshort`,
+		   gp.`denomination`,
+		   gp.`package_status`,
+		   gp.`review_id`,
+		   gp.`review_status`,
+		   gp.`review_remarks`,
+		   gp.`default_amount`,
+		   gp.`noticket_amount`,
+		   gp.`ticket_amount`,
+		   gp.`ticket_someamount`,
+		   gp.`ticket_amount`,
+		   gp.`remarks`,
+		   gp.`create_id`,
+		   gp.`update_id`,
+		   gp.`status`,
+		   gp.`create_time`,
+		   gp.`update_time`,
+		   gpi.id AS gpiId,
+		   gpi.`gcs_id`,
+		   gpi.`account`
+		FROM
+		   goods_package gp,
+		   goods_package_info gpi
+		<where>
+		   gp.id=gpi.gp_id
+		    <if test=" queryWrapper.gpNo!= null ">
+                       and   gp.gp_no  like concat('%', #{queryWrapper.gpNo}, '%')
+             </if>
+             <if test=" queryWrapper.packageName!= null">
+                       and   gp.`package_name`  like concat('%', #{queryWrapper.packageName}, '%')
+             </if>
+		</where>
+	</select>
 </mapper>

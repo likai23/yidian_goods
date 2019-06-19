@@ -4,7 +4,7 @@
  * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
  */
-package com.ydsh.goods.web.entity;
+package com.ydsh.goods.web.entity.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -28,7 +28,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class GoodsPackage implements Serializable {
+public class GoodsPackageAndSkuDto implements Serializable {
 
 	private static final long serialVersionUID = 1560475481193L;
 	
@@ -77,4 +77,11 @@ public class GoodsPackage implements Serializable {
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	@ApiModelProperty(name = "updateTime" , value = "修改时间（自动生成, MySQL 5.7+）")
 	private Date updateTime;
+	@TableId(value = "id", type = IdType.AUTO)
+	@ApiModelProperty(name = "gpiId" , value = "套餐对应sku表的id")
+	private Long gpiId;
+	@ApiModelProperty(name = "gcsId" , value = "卡券商品或者直充商品sku的id")
+	private Long gcsId;
+	@ApiModelProperty(name = "account" , value = "数量")
+	private Integer account;
 }

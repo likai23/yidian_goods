@@ -7,8 +7,15 @@
 package com.ydsh.goods.web.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import com.ydsh.goods.web.entity.GoodsPackage;
+import com.ydsh.goods.web.entity.dto.GoodsPackageAndSkuDto;
 
 /**   
  * <p>自定义mapper写在这里</p>
@@ -21,4 +28,13 @@ import com.ydsh.goods.web.entity.GoodsPackage;
 @Mapper
 public interface GoodsPackageDao extends BaseMapper<GoodsPackage> {
 	
+	/**
+	 * 
+	* 套餐商品和关联sku分页查询
+	*
+	* @param @param pageParam
+	* @param @return
+	* @return
+	 */
+    IPage<GoodsPackageAndSkuDto> getPackageAndSkuPages(IPage<Map<String,Object>> page, @Param("queryWrapper") GoodsPackageAndSkuDto queryWrapper);
 }

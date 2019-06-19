@@ -27,7 +27,7 @@ import com.ydsh.goods.common.exception.SystemException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsAttributeAdd;
-import com.ydsh.goods.web.entity.ext.GoodsAttributeAddExt;
+import com.ydsh.goods.web.entity.dto.GoodsAttributeAddDto;
 import com.ydsh.goods.web.service.GoodsAttributeAddService;
 
 import io.swagger.annotations.Api;
@@ -68,7 +68,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 	@RequestMapping(value = "/getAttributePages", method = RequestMethod.GET)
 	@ApiOperation(value = "分页查询销售属性主表和副表", notes = "分页查询返回[IPage<T>],作者：")
 	public JsonResult<IPage<Map<String, Object>>> getAttributeAddWtithManagerPages(
-			PageParam<GoodsAttributeAddExt> pageParam) {
+			PageParam<GoodsAttributeAddDto> pageParam) {
 		if (pageParam.getPageSize() > 500) {
 			logger.error("分页最大限制500，" + pageParam);
 			result.error("分页最大限制500");
@@ -119,7 +119,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 	 */
 	@RequestMapping(value = "/updateAttributeSlave", method = RequestMethod.POST)
 	@ApiOperation(value = "修改商品销售副属性", notes = "作者：")
-	public JsonResult<Object> updateAttributeSlave(@RequestBody GoodsAttributeAddExt param) {
+	public JsonResult<Object> updateAttributeSlave(@RequestBody GoodsAttributeAddDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		String updateSign = param.getUpdateSign();
 		if (TextUtils.isEmpty(updateSign)) {

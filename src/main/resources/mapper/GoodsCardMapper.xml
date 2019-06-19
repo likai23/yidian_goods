@@ -37,32 +37,35 @@
 		   goods_card_sku gcs
 		<where>
 		   gc.`id` = gcs.`gc_id`
-		    <if test=" gcNo!= null and gcNo!= ''">
-                       and   gc.gc_no  like concat('%', #{gcNo}, '%')
+		    <if test=" queryWrapper.gcNo!= null and queryWrapper.gcNo!= ''">
+                       and   gc.gc_no  like concat('%', #{queryWrapper.gcNo}, '%')
              </if>
-             <if test=" gcsNo!= null">
-                       and   gcs.`gcs_no`  like concat('%', #{gcsNo}, '%')
+             <if test=" queryWrapper.gcsNo!= null">
+                       and   gcs.`gcs_no`  like concat('%', #{queryWrapper.gcsNo}, '%')
              </if>
-             <if test=" goodName!= null">
-                       and   gc.`good_name`  like concat('%', #{goodName}, '%')
+             <if test=" queryWrapper.gcsId!= null">
+                       and   gcs.`id`  = #{queryWrapper.gcsId}
              </if>
-             <if test=" goodType!= null">
-                       and   gc.`good_type`  =  #{goodType}
+             <if test=" queryWrapper.goodName!= null">
+                       and   gc.`good_name`  like concat('%', #{queryWrapper.goodName}, '%')
              </if>
-             <if test=" goodProperty!= null">
-                       and   gc.`good_property`  =  #{goodProperty}
+             <if test=" queryWrapper.goodType!= null">
+                       and   gc.`good_type`  =  #{queryWrapper.goodType}
              </if>
-             <if test=" goodShape!= null">
-                       and   gc.`good_shape` =  #{goodShape}
+             <if test=" queryWrapper.goodProperty!= null">
+                       and   gc.`good_property`  =  #{queryWrapper.goodProperty}
              </if>
-             <if test=" goodCategoryId!= null">
-                       and   gc.`good_category_id` =  #{goodCategoryId}
+             <if test=" queryWrapper.goodShape!= null">
+                       and   gc.`good_shape` =  #{queryWrapper.goodShape}
              </if>
-             <if test=" goodStatus!= null">
-                       and   gc.`good_status` =  #{goodStatus}
+             <if test=" queryWrapper.goodCategoryId!= null">
+                       and   gc.`good_category_id` =  #{queryWrapper.goodCategoryId}
              </if>
-             <if test=" reviewStatus!= null">
-                       and   gc.`review_status` =  #{reviewStatus}
+             <if test=" queryWrapper.goodStatus!= null">
+                       and   gc.`good_status` =  #{queryWrapper.goodStatus}
+             </if>
+             <if test=" queryWrapper.reviewStatus!= null">
+                       and   gc.`review_status` =  #{queryWrapper.reviewStatus}
              </if> 
 		</where>
 	</select>

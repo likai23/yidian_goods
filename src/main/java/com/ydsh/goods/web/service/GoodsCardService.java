@@ -8,12 +8,13 @@ package com.ydsh.goods.web.service;
 
 import java.util.Map;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import org.apache.ibatis.annotations.Param;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ydsh.goods.web.entity.GoodsCard;
-import com.ydsh.goods.web.entity.ext.GoodsCardAndSku;
+import com.ydsh.goods.web.entity.dto.GoodsCardAndSkuDto;
 /**   
  * <p>自定义service写在这里</p>
  * 
@@ -32,5 +33,15 @@ public interface GoodsCardService extends IService<GoodsCard> {
 	* @param @return
 	* @return
 	 */
-	 Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, Wrapper<GoodsCardAndSku> queryWrapper);
+	 Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, GoodsCardAndSkuDto queryWrapper);
+	  /**
+	   * 
+	   * *连表查询 销售属性主表和副表
+	   *
+	   * @param @param page
+	   * @param @param queryWrapper
+	   * @param @return
+	   * @return
+	   */
+	  Map<String, Object> selectCardAndSKUPage(@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper);
 }
