@@ -92,21 +92,17 @@ public class GoodsCardAndSkuDto implements Serializable {
 	@ApiModelProperty(name = "sdId", value = "供应商id，多存")
 	private String sdId;
 	@ApiModelProperty(name = "defaultAmount", value = "默认指导价")
-	private Long defaultAmount;
+	private String defaultAmount;
 	@ApiModelProperty(name = "noticketAmount", value = "不带票指导价")
-	private Long noticketAmount;
+	private String noticketAmount;
 	@ApiModelProperty(name = "ticketSomeamount", value = "带票同行价")
-	private Long ticketSomeamount;
+	private String ticketSomeamount;
 	@ApiModelProperty(name = "noticketSomeamount", value = "不带票同行价")
-	private Long noticketSomeamount;
+	private String noticketSomeamount;
 	@ApiModelProperty(name = "ticketAmount", value = "带票指导价")
-	private Long ticketAmount;
+	private String ticketAmount;
 	@JSONField(serialize = false)
 	@TableField(exist = false)
 	@ApiModelProperty(name = "skuCardList", value = "sku的list列表包含skuName='sku名称'，gaaId='销售属性'，sdId='供应商id'，skuCardPlatformInfoList='sku平台信息包含{pmId='平台id',skuCoverPhoto='商品封面图',skuMainPhoto='商品主图',skuDesc='商品详情'}'  ")                                                                       
 	private List<Map<String, Object>> skuCardList;
-	@JSONField(serialize = false)
-	@TableField(exist = false)
-	@ApiModelProperty(name = "updateSign" , value = " 修改卡券商品基本信息值为updateGoodsCard，上架，下架，作废值为updateGoodsCardWithStatus{id,goodStatus必填}，审核为reviewGoodsCard{id,reviewStatus,reviewRemarks必填}")
-	private String updateSign;
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.ydsh.goods.web.dao.GoodsCardDao">
 
 	<select id="selectCardAndSKUPage"
-		parameterType="com.ydsh.goods.web.entity.ext.GoodsCardAndSku" resultType="java.util.Map">
+		parameterType="com.ydsh.goods.web.entity.dto.GoodsCardAndSkuDto" resultType="com.ydsh.goods.web.entity.dto.GoodsCardAndSkuDto">
 		SELECT
 		   gc.id AS gcId,
 		   gc.gc_no AS gcNo,
@@ -27,11 +27,11 @@
 		   gcs.sku_name AS skuName,
 		   gcs.gaa_id AS gaaId,
 		   gcs.sd_id AS sdId,
-		   gcs.default_amount AS defaultAmount,
-		   gcs.noticket_amount AS noticketAmount,
-		   gcs.ticket_someamount AS ticketSomeamount,
-		   gcs.noticket_someamount AS noticketSomeamount,
-		   gcs.ticket_amount AS ticketAmount
+		   CAST((gcs.default_amount)/10000 AS DECIMAL(18,4))  AS defaultAmount,
+		   CAST((gcs.noticket_amount)/10000 AS DECIMAL(18,4)) AS noticketAmount,
+		   CAST((gcs.ticket_someamount)/10000 AS DECIMAL(18,4))  AS ticketSomeamount,
+		   CAST((gcs.noticket_someamount)/10000 AS DECIMAL(18,4)) AS noticketSomeamount,
+		   CAST((gcs.ticket_amount)/10000 AS DECIMAL(18,4))  AS ticketAmount
 		FROM
 		   goods_card gc,
 		   goods_card_sku gcs

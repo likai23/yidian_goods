@@ -6,15 +6,14 @@
  */
 package com.ydsh.goods.web.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ydsh.goods.web.entity.GoodsCard;
 import com.ydsh.goods.web.entity.dto.GoodsCardAndSkuDto;
 
@@ -37,7 +36,7 @@ public interface GoodsCardDao extends BaseMapper<GoodsCard> {
 	* @param @return
 	* @return
 	 */
-	  Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page,@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper);
+	  Page<GoodsCardAndSkuDto> selectCardAndSKUPage(IPage<Map<String, Object>> page,@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper);
 	  /**
 	   * 
 	   * *连表查询 销售属性主表和副表
@@ -47,7 +46,7 @@ public interface GoodsCardDao extends BaseMapper<GoodsCard> {
 	   * @param @return
 	   * @return
 	   */
-	  Map<String, Object> selectCardAndSKUPage(@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper);
+	  GoodsCardAndSkuDto selectCardAndSKUPage(@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper);
 	
 	
 	

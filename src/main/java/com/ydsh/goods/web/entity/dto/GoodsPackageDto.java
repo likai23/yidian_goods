@@ -85,8 +85,4 @@ public class GoodsPackageDto implements Serializable {
 	@TableField(exist = false)
 	@ApiModelProperty(name = "PackageList", value = "sku的list列表包含{pmId='平台id'，coverPhoto='套餐封面图'，mainPhoto='套餐主图' }    ")
 	private List<Map<String, Object>> PackageList;
-	@JSONField(serialize = false)
-	@TableField(exist = false)
-	@ApiModelProperty(name = "updateSign", value = "修改套餐商品值为updatePackage{id,gpNo,packageName,packageForshort,denomination,packageStatus必填}，修改套餐商品状态值为updatePackageStatus{字段id,packageStatus必填}，审核值为reviewPackage{字段id,reviewStatus，reviewRemarks必填}")
-	private String updateSign;
 }

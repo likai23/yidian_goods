@@ -24,7 +24,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class LookOrUpdateTakeInGoodsCardDto implements Serializable {
+public class LookOrUpdateTakeInGoodsCardQueryDto implements Serializable {
 
 	private static final long serialVersionUID = 1560475480915L;
 	

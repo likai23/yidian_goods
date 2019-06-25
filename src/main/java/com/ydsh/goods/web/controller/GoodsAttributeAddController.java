@@ -28,6 +28,7 @@ import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsAttributeAdd;
 import com.ydsh.goods.web.entity.dto.GoodsAttributeAddDto;
+import com.ydsh.goods.web.entity.dto.updateGoodsAttributeManagerStatus;
 import com.ydsh.goods.web.service.GoodsAttributeAddService;
 
 import io.swagger.annotations.Api;
@@ -87,7 +88,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 
 	/**
 	 * 
-	 * 新增商品销售副属性
+	 * *新增商品销售副属性
 	 * 
 	 * @param @param  param
 	 * @param @return
@@ -110,42 +111,47 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 
 	/**
 	 * 
-	 * 1-修改商品销售副属性基本信息 2-修改商品销售副属性状态
+	* * 修改商品销售副属性基本信息
+	*
+	* @param @param param
+	* @param @return
+	* @return
+	 */
+	@RequestMapping(value = "/updateAttributeSlave", method = RequestMethod.POST)
+	@ApiOperation(value = "修改商品销售副属性基本信息", notes = "作者：")
+	public JsonResult<Object> updateAttributeSlave(@RequestBody GoodsAttributeAddDto param) {
+		JsonResult<Object> result = new JsonResult<Object>();
+		String id = String.valueOf(param.getId());
+		String attributeValue = param.getAttributeValue();
+		String attributeOrder = String.valueOf(param.getAttributeOrder());
+		String status = String.valueOf(param.getStatus());
+		if (TextUtils.isEmptys(id, attributeValue, attributeOrder, status)) {
+			logger.error("请求参数为空，" + param);
+			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
+		}
+		GoodsAttributeAdd goodsAttributeAdd = new GoodsAttributeAdd();
+		goodsAttributeAdd.setId(Long.parseLong(id));
+		goodsAttributeAdd.setAttributeValue(attributeValue);
+		goodsAttributeAdd.setAttributeOrder(Integer.parseInt(attributeOrder));
+		goodsAttributeAdd.setStatus(Integer.parseInt(status));
+		baseService.updateById(goodsAttributeAdd);
+		result.success("修改成功！");
+		return result;
+	}
+	/**
+	 * 
+	 *  *修改商品销售副属性状态
 	 * 
 	 * @param @param  param
 	 * @param @return
 	 * @param @throws CoreException
 	 * @return
 	 */
-	@RequestMapping(value = "/updateAttributeSlave", method = RequestMethod.POST)
-	@ApiOperation(value = "修改商品销售副属性", notes = "作者：")
-	public JsonResult<Object> updateAttributeSlave(@RequestBody GoodsAttributeAddDto param) {
+	@RequestMapping(value = "/updateAttributeSlaveWithStatus", method = RequestMethod.POST)
+	@ApiOperation(value = "修改商品销售副属性状态", notes = "作者：")
+	public JsonResult<Object> updateAttributeSlaveWithStatus(@RequestBody updateGoodsAttributeManagerStatus param) {
 		JsonResult<Object> result = new JsonResult<Object>();
-		String updateSign = param.getUpdateSign();
-		if (TextUtils.isEmpty(updateSign)) {
-			logger.error("请求参数为空，" + param);
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
-		}
-		// 修改商品销售副属性基本信息
-		if (updateSign.equals("updateAttributeSlave")) {
-			String id = String.valueOf(param.getId());
-			String attributeValue = param.getAttributeValue();
-			String attributeOrder = String.valueOf(param.getAttributeOrder());
-			String status = String.valueOf(param.getStatus());
-			if (TextUtils.isEmptys(id, attributeValue, attributeOrder, status)) {
-				logger.error("请求参数为空，" + param);
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
-			}
-			GoodsAttributeAdd goodsAttributeAdd = new GoodsAttributeAdd();
-			goodsAttributeAdd.setId(Long.parseLong(id));
-			goodsAttributeAdd.setAttributeValue(attributeValue);
-			goodsAttributeAdd.setAttributeOrder(Integer.parseInt(attributeOrder));
-			goodsAttributeAdd.setStatus(Integer.parseInt(status));
-			baseService.updateById(goodsAttributeAdd);
-			result.success("修改成功！");
-		}
 		// 修改商品销售副属性状态
-		else if (updateSign.equals("updateAttributeSlaveWithStatus")) {
 			String id = String.valueOf(param.getId());
 			String status = String.valueOf(param.getStatus());
 			if (TextUtils.isEmptys(id, status)) {
@@ -187,10 +193,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 					return result;
 				}
 			}
-		} else {
-			logger.error("请求参数异常，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
-		}
+		
 		return result;
 	}
 

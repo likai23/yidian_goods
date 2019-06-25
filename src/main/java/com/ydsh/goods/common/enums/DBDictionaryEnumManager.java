@@ -31,7 +31,7 @@ public enum DBDictionaryEnumManager {
 	no("1","否"),
 	
 	/**
-	 * *账单明细
+	 * 账单明细
 	 */
 	bill_state_0("0","未生成"),
 	bill_state_1("1","已生成"),
@@ -47,13 +47,13 @@ public enum DBDictionaryEnumManager {
 	bill_detail_3("3","已扣款"),
 	
 	/**
-	 * *启用状态 
+	 * 商户状态 
 	 */
 	user_status_0("0","启用"),
 	user_status_1("1","禁用"),
 	user_status_2("2","黑名单"),
 	/**
-	 * *商品状态
+	 * 商品状态
 	 */
 	goods_0("0","上架"),
 	goods_1("1","下架"),
@@ -70,7 +70,7 @@ public enum DBDictionaryEnumManager {
 	coupon_code_5("5","已作废"),
 	
 	/**
-	 * *删除标志
+	 * 删除标志
 	 */
 	invalid("0","无效"),
 	valid("1","有效"),
@@ -86,7 +86,31 @@ public enum DBDictionaryEnumManager {
 	 */
 	goods_card("0","卡券商品"),
 	package_card("1","套餐商品"),
+
+	/**
+	 * *充值账本
+	 */
+	account_book_0("0","余额充值"),
+	account_book_1("1","佣金充值"),
+	account_book_2("2","预付充值"),
+	account_book_3("3","返利充值"),
+	account_book_4("4","回款充值"),
 	
+	/**
+	 * 采购状态
+	 */
+	purchase_status_0("0","待采购"),
+	purchase_status_1("1","暂不采购"),
+	purchase_status_2("2","无需采购"),
+	purchase_status_3("3","待处理"),
+	
+	/**
+	 * *结算方式：入库结算、核销结算、发放结算、订单结算
+	 */
+	settlement_method_0("0","入库结算"),
+	settlement_method_1("1","核销结算"),
+	settlement_method_2("2","发放结算"),
+	settlement_method_3("3","订单结算"),
 	
 	;
 

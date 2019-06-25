@@ -3,8 +3,8 @@
 <mapper namespace="com.ydsh.goods.web.dao.GoodsPackageDao">
 
 	<select id="getPackageAndSkuPages" 
-		parameterType="com.ydsh.goods.web.entity.ext.GoodsPackageAndSku"
-		resultType="com.ydsh.goods.web.entity.ext.GoodsPackageAndSku">
+		parameterType="com.ydsh.goods.web.entity.dto.GoodsPackageAndSkuDto"
+		resultType="com.ydsh.goods.web.entity.dto.GoodsPackageAndSkuDto">
 		SELECT
 		   gp.id AS gpId,
 		   gp.`gp_no` ,
@@ -15,11 +15,11 @@
 		   gp.`review_id`,
 		   gp.`review_status`,
 		   gp.`review_remarks`,
-		   gp.`default_amount`,
-		   gp.`noticket_amount`,
-		   gp.`ticket_amount`,
-		   gp.`ticket_someamount`,
-		   gp.`ticket_amount`,
+		   CAST((gp.`default_amount`)/10000 AS DECIMAL(18,4)) AS defaultAmount,
+		   CAST((gp.`noticket_amount`)/10000 AS DECIMAL(18,4)) AS noticketAmount,
+		   CAST((gp.`noticket_someamount`)/10000 AS DECIMAL(18,4)) AS noticketSomeamount,
+		   CAST((gp.`ticket_someamount`)/10000 AS DECIMAL(18,4)) AS ticketSomeamount,
+		   CAST((gp.`ticket_amount`)/10000 AS DECIMAL(18,4)) AS ticketAmount,
 		   gp.`remarks`,
 		   gp.`create_id`,
 		   gp.`update_id`,

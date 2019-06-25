@@ -6,12 +6,15 @@
  */
 package com.ydsh.goods.web.controller;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +38,11 @@ import com.ydsh.goods.web.entity.GoodsCardSku;
 import com.ydsh.goods.web.entity.GoodsCardSkuPlatforminfo;
 import com.ydsh.goods.web.entity.GoodsCategory;
 import com.ydsh.goods.web.entity.dto.GoodsCardAndSkuDto;
-import com.ydsh.goods.web.entity.dto.LookOrUpdateTakeInGoodsCardDto;
+import com.ydsh.goods.web.entity.dto.GoodsCardSkuDto;
+import com.ydsh.goods.web.entity.dto.LookAndUpdateTakeInGoodsCard;
+import com.ydsh.goods.web.entity.dto.LookOrUpdateTakeInGoodsCardQueryDto;
+import com.ydsh.goods.web.entity.dto.reviewGoodsCardAndSkuDto;
+import com.ydsh.goods.web.entity.dto.updateGoodsCardAndSkuStatusDto;
 import com.ydsh.goods.web.service.GoodsCardService;
 import com.ydsh.goods.web.service.GoodsCardSkuPlatforminfoService;
 import com.ydsh.goods.web.service.GoodsCardSkuService;
@@ -64,9 +71,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GoodsCardController extends AbstractController<GoodsCardService, GoodsCard> {
 
-
 	private static Logger logger = LoggerFactory.getLogger(GoodsCardController.class);
-
 
 	@Autowired
 	private GoodsCardService goodsCardService;
@@ -86,21 +91,22 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	 */
 	@RequestMapping(value = "/getCardAndSKUPages", method = RequestMethod.GET)
 	@ApiOperation(value = "卡券商品分页查询", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
-	public JsonResult<IPage<Map<String, Object>>> getCardAndSKUPages(@RequestBody PageParam<GoodsCardAndSkuDto> pageParam) {
-		JsonResult<IPage<Map<String, Object>>> returnPage = new JsonResult<IPage<Map<String, Object>>>();
-		if(pageParam.getPageSize()>500) {
-			logger.error("分页最大限制500，" +pageParam);
+	public JsonResult<IPage<GoodsCardAndSkuDto>> getCardAndSKUPages(
+			@RequestBody PageParam<GoodsCardAndSkuDto> pageParam) {
+		JsonResult<IPage<GoodsCardAndSkuDto>> returnPage = new JsonResult<IPage<GoodsCardAndSkuDto>>();
+		if (pageParam.getPageSize() > 500) {
+			logger.error("分页最大限制500，" + pageParam);
 			returnPage.error("分页最大限制500");
 			return returnPage;
 		}
 		Page<Map<String, Object>> page = new Page<Map<String, Object>>(pageParam.getPageNum(), pageParam.getPageSize());
-		QueryWrapper<GoodsCardAndSkuDto> queryWrapper =new QueryWrapper<GoodsCardAndSkuDto>();
+		QueryWrapper<GoodsCardAndSkuDto> queryWrapper = new QueryWrapper<GoodsCardAndSkuDto>();
 		queryWrapper.setEntity(pageParam.getParam());
-		if(queryWrapper.getEntity()==null) {
+		if (queryWrapper.getEntity() == null) {
 			queryWrapper.setEntity(new GoodsCardAndSkuDto());
 		}
 		// 分页数据
-		Page<Map<String, Object>> pageData = goodsCardService.selectCardAndSKUPage(page, queryWrapper.getEntity());
+		Page<GoodsCardAndSkuDto> pageData = goodsCardService.selectCardAndSKUPage(page, queryWrapper.getEntity());
 		result.success("添加成功");
 		returnPage.success(pageData);
 
@@ -120,13 +126,13 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	public JsonResult<Object> saveCardWithSku(@RequestBody GoodsCardAndSkuDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		String goodName = param.getGoodName();
-		String goodForshort =param.getGoodForshort();
-		String goodAttribute =param.getGoodAttribute(); 
-		String goodType =param.getGoodType(); 
-		String goodProperty =param.getGoodProperty(); 
-		String goodShape =param.getGoodShape();
-		String goodCategoryId =param.getGoodCategoryId();
-		String goodStatus =param.getGoodStatus();
+		String goodForshort = param.getGoodForshort();
+		String goodAttribute = param.getGoodAttribute();
+		String goodType = param.getGoodType();
+		String goodProperty = param.getGoodProperty();
+		String goodShape = param.getGoodShape();
+		String goodCategoryId = param.getGoodCategoryId();
+		String goodStatus = param.getGoodStatus();
 		if (TextUtils.isEmptys(goodName, goodAttribute, goodType, goodProperty, goodShape, goodCategoryId)) {
 			logger.error("请求参数为空，" + param);
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
@@ -141,7 +147,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		QueryWrapper<GoodsCard> queryWrapper = new QueryWrapper<GoodsCard>();
 		queryWrapper.eq("goodName", goodName);
 		Map<String, Object> checkName = baseService.getMap(queryWrapper);
-		if(checkName!=null) {
+		if (checkName != null) {
 			logger.error("商品名称不允许重复，" + param);
 			result.error("商品名称不允许重复！");
 			return result;
@@ -208,7 +214,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	 */
 	@RequestMapping(value = "/getCardWithSkuById", method = RequestMethod.POST)
 	@ApiOperation(value = "查看商品和sku", notes = "作者：戴艺辉")
-	public JsonResult<Object> lookCardGoods(@RequestBody LookOrUpdateTakeInGoodsCardDto param) {
+	public JsonResult<Object> lookCardGoods(@RequestBody LookOrUpdateTakeInGoodsCardQueryDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		// 商品id
 		String bgcId = String.valueOf(param.getGcId());
@@ -224,7 +230,9 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		if (getSign.equals("lookSign")) {
 			QueryWrapper<GoodsCard> queryWrapper = new QueryWrapper<GoodsCard>();
 			queryWrapper.eq("id", bgcId);
-			Map<String, Object> bossGoodsCard = baseService.getMap(queryWrapper);
+			GoodsCard bossGoodsCard = baseService.getOne(queryWrapper);
+			LookAndUpdateTakeInGoodsCard lookAndUpdateTakeInGoodsCard = new LookAndUpdateTakeInGoodsCard();
+			BeanUtils.copyProperties(bossGoodsCard, lookAndUpdateTakeInGoodsCard);
 			if (bossGoodsCard == null) {
 				logger.error("商品不存在！");
 				result.error("商品不存在！");
@@ -232,47 +240,74 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 			}
 			QueryWrapper<GoodsCardSku> queryWrapperSku = new QueryWrapper<GoodsCardSku>();
 			queryWrapperSku.eq("id", bgcsId);
-			List<Map<String, Object>> skulist = goodsCardSkuService.listMaps(queryWrapperSku);
-			for (Map<String, Object> map : skulist) {
-				String id = String.valueOf(map.get("id"));
+			List<GoodsCardSku> skulist = goodsCardSkuService.list(queryWrapperSku);
+			List<GoodsCardSkuDto> skulistDto = new LinkedList<GoodsCardSkuDto>();
+			for (GoodsCardSku map : skulist) {
+				GoodsCardSkuDto goodsCardSkuDto = new GoodsCardSkuDto();
+				BeanUtils.copyProperties(map, goodsCardSkuDto);
+				goodsCardSkuDto.setDefaultAmount(
+						new BigDecimal(map.getDefaultAmount()).multiply(new BigDecimal("0.0001")).toString());
+				goodsCardSkuDto.setNoticketAmount(
+						new BigDecimal(map.getNoticketAmount()).multiply(new BigDecimal("0.0001")).toString());
+				goodsCardSkuDto.setTicketSomeamount(
+						new BigDecimal(map.getTicketSomeamount()).multiply(new BigDecimal("0.0001")).toString());
+				goodsCardSkuDto.setNoticketSomeamount(
+						new BigDecimal(map.getNoticketSomeamount()).multiply(new BigDecimal("0.0001")).toString());
+				goodsCardSkuDto.setTicketAmount(
+						new BigDecimal(map.getTicketAmount()).multiply(new BigDecimal("0.0001")).toString());
 				QueryWrapper<GoodsCardSkuPlatforminfo> goodsCardSkuPlatforminfo = new QueryWrapper<GoodsCardSkuPlatforminfo>();
-				goodsCardSkuPlatforminfo.eq("gcs_id", id);
-				List<Map<String, Object>> goodsCardSkuPlatforminfoList = goodsCardSkuPlatforminfoService
-						.listMaps(goodsCardSkuPlatforminfo);
-				map.put("skuCardPlatformInfoList", goodsCardSkuPlatforminfoList);
+				goodsCardSkuPlatforminfo.eq("gcs_id", goodsCardSkuDto.getId());
+				List<GoodsCardSkuPlatforminfo> goodsCardSkuPlatforminfoList = goodsCardSkuPlatforminfoService
+						.list(goodsCardSkuPlatforminfo);
+				goodsCardSkuDto.setGoodsCardSkuPlatforminfoList(goodsCardSkuPlatforminfoList);
+				skulistDto.add(goodsCardSkuDto);
 			}
-			bossGoodsCard.put("skuCardList", skulist);
+			lookAndUpdateTakeInGoodsCard.setGoodsCardSkuDtoList(skulistDto);
 			result.success("查询成功");
-			result.setData(bossGoodsCard);
-            return result;
+			result.setData(lookAndUpdateTakeInGoodsCard);
+			return result;
 		}
 		// 修改时进入查询
 		else if (getSign.equals("lookSignWithStatus")) {
 			QueryWrapper<GoodsCard> queryWrapper = new QueryWrapper<GoodsCard>();
 			queryWrapper.eq("id", bgcId);
-			Map<String, Object> bossGoodsCard = baseService.getMap(queryWrapper);
+			GoodsCard bossGoodsCard = baseService.getOne(queryWrapper);
+			LookAndUpdateTakeInGoodsCard lookAndUpdateTakeInGoodsCard = new LookAndUpdateTakeInGoodsCard();
 			if (bossGoodsCard == null) {
 				logger.error("商品不存在！");
 				result.error("商品不存在！");
 				return result;
 			}
-			String reviewStatus = (String) bossGoodsCard.get("review_status");
+			String reviewStatus = (String) bossGoodsCard.getReviewStatus();
 			if (reviewStatus.equals(DBDictionaryEnumManager.review_0.getkey())
 					|| reviewStatus.equals(DBDictionaryEnumManager.review_2.getkey())) {
 				QueryWrapper<GoodsCardSku> queryWrapperSku = new QueryWrapper<GoodsCardSku>();
 				queryWrapperSku.eq("id", bgcsId);
-				List<Map<String, Object>> skulist = goodsCardSkuService.listMaps(queryWrapperSku);
-				for (Map<String, Object> map : skulist) {
-					String id = String.valueOf(map.get("id"));
+				List<GoodsCardSku> skulist = goodsCardSkuService.list(queryWrapperSku);
+				List<GoodsCardSkuDto> skulistDto = new LinkedList<GoodsCardSkuDto>();
+				for (GoodsCardSku map : skulist) {
+					GoodsCardSkuDto goodsCardSkuDto = new GoodsCardSkuDto();
+					BeanUtils.copyProperties(map, goodsCardSkuDto);
+					goodsCardSkuDto.setDefaultAmount(
+							new BigDecimal(map.getDefaultAmount()).multiply(new BigDecimal("0.0001")).toString());
+					goodsCardSkuDto.setNoticketAmount(
+							new BigDecimal(map.getNoticketAmount()).multiply(new BigDecimal("0.0001")).toString());
+					goodsCardSkuDto.setTicketSomeamount(
+							new BigDecimal(map.getTicketSomeamount()).multiply(new BigDecimal("0.0001")).toString());
+					goodsCardSkuDto.setNoticketSomeamount(
+							new BigDecimal(map.getNoticketSomeamount()).multiply(new BigDecimal("0.0001")).toString());
+					goodsCardSkuDto.setTicketAmount(
+							new BigDecimal(map.getTicketAmount()).multiply(new BigDecimal("0.0001")).toString());
 					QueryWrapper<GoodsCardSkuPlatforminfo> goodsCardSkuPlatforminfo = new QueryWrapper<GoodsCardSkuPlatforminfo>();
-					goodsCardSkuPlatforminfo.eq("gcs_id", id);
-					List<Map<String, Object>> goodsCardSkuPlatforminfoList = goodsCardSkuPlatforminfoService
-							.listMaps(goodsCardSkuPlatforminfo);
-					map.put("skuCardPlatformInfoList", goodsCardSkuPlatforminfoList);
+					goodsCardSkuPlatforminfo.eq("gcs_id", goodsCardSkuDto.getId());
+					List<GoodsCardSkuPlatforminfo> goodsCardSkuPlatforminfoList = goodsCardSkuPlatforminfoService
+							.list(goodsCardSkuPlatforminfo);
+					goodsCardSkuDto.setGoodsCardSkuPlatforminfoList(goodsCardSkuPlatforminfoList);
+					skulistDto.add(goodsCardSkuDto);
 				}
-				bossGoodsCard.put("skuCardList", skulist);
+				lookAndUpdateTakeInGoodsCard.setGoodsCardSkuDtoList(skulistDto);
 				result.success("查询成功");
-				result.setData(bossGoodsCard);
+				result.setData(lookAndUpdateTakeInGoodsCard);
 				return result;
 			} else {
 				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
@@ -296,153 +331,173 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 	@ApiOperation(value = "修改卡券商品", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
 	public JsonResult<Object> updateGoodsCard(@RequestBody GoodsCardAndSkuDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
-		String updateSign = param.getUpdateSign();
-		if (TextUtils.isEmpty(updateSign)) {
-			logger.error("请求参数为空，");
+		// 修改卡券商品基本信息
+		String id = String.valueOf(param.getGcId());
+		String goodStatus = param.getGoodStatus();
+//			String bgemId = TextUtils.getMapForKeyToString(param, "bgemId");
+		if (TextUtils.isEmptys(id)) {
+			logger.error("请求参数为空，" + param);
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
-		// 修改卡券商品基本信息
-		if (updateSign.equals("updateGoodsCard")) {
-			String id = String.valueOf(param.getGcId());
-			String goodStatus = param.getGoodStatus();
-//			String bgemId = TextUtils.getMapForKeyToString(param, "bgemId");
-			if (TextUtils.isEmptys(id)) {
-				logger.error("请求参数为空，" + param);
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
-			}
-			GoodsCard bossGoodsCard = new GoodsCard();
-			bossGoodsCard.setId(Long.parseLong(id));
-			bossGoodsCard.setGoodStatus(goodStatus);
+		GoodsCard bossGoodsCard = new GoodsCard();
+		bossGoodsCard.setId(Long.parseLong(id));
+		bossGoodsCard.setGoodStatus(goodStatus);
 //			bossGoodsCard.setBgemId(Long.parseLong(bgemId));
-			// 待审核状态
-			bossGoodsCard.setReviewStatus(DBDictionaryEnumManager.review_0.getkey());
-			// 更新卡券商品主表
-			goodsCardService.updateById(bossGoodsCard);
-			List<Map<String, Object>> bossGoodsCardSkuMapList =param.getSkuCardList();
-			// 更新sku平台图片详情
-			if (bossGoodsCardSkuMapList == null || bossGoodsCardSkuMapList.isEmpty()) {
-				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				result.error("sku信息不存在");
-			} else {
-				// 更新卡券sku详情
-				for(Map<String, Object> bossGoodsCardSkuMap:bossGoodsCardSkuMapList) {
-					GoodsCardSku bossGoodsCardSku = new GoodsCardSku();
-					bossGoodsCardSku.setId(Long.parseLong(String.valueOf(bossGoodsCardSkuMap.get("id"))));
-					bossGoodsCardSku.setSdId(String.valueOf(bossGoodsCardSkuMap.get("sdId")));
-					goodsCardSkuService.updateById(bossGoodsCardSku);
-					
-					QueryWrapper<GoodsCardSkuPlatforminfo> queryWrapperSku = new QueryWrapper<GoodsCardSkuPlatforminfo>();
-					queryWrapperSku.eq("gcs_id", bossGoodsCardSku.getId());
-					
-					@SuppressWarnings("unchecked")
-					List<Map<String, Object>> skuCardPlatformInfoList = (List<Map<String, Object>>) bossGoodsCardSkuMap.get("skuCardPlatformInfoList");
-					if (!skuCardPlatformInfoList.isEmpty()) {
-						for (int j = 0; j < skuCardPlatformInfoList.size(); j++) {
-							HashMap<String, Object> Infomap = (HashMap<String, Object>) skuCardPlatformInfoList.get(j);
-							GoodsCardSkuPlatforminfo bossGoodsCardskuPlatformInfo = new GoodsCardSkuPlatforminfo();
-							bossGoodsCardskuPlatformInfo.setId(Long.parseLong(String.valueOf(Infomap.get("id"))));
-							bossGoodsCardskuPlatformInfo.setSkuCoverPhoto(String.valueOf(Infomap.get("skuCoverPhoto")));
-							bossGoodsCardskuPlatformInfo.setSkuMainPhoto(String.valueOf(Infomap.get("skuMainPhoto")));
-							bossGoodsCardskuPlatformInfo.setSkuDesc(String.valueOf(Infomap.get("skuDesc")));
-							bossGoodsCardskuPlatformInfo.setPmId(Long.parseLong(String.valueOf(Infomap.get("pmId"))));
-							goodsCardSkuPlatforminfoService.updateById(bossGoodsCardskuPlatformInfo);
-						}
+		// 待审核状态
+		bossGoodsCard.setReviewStatus(DBDictionaryEnumManager.review_0.getkey());
+		// 更新卡券商品主表
+		goodsCardService.updateById(bossGoodsCard);
+		List<Map<String, Object>> bossGoodsCardSkuMapList = param.getSkuCardList();
+		// 更新sku平台图片详情
+		if (bossGoodsCardSkuMapList == null || bossGoodsCardSkuMapList.isEmpty()) {
+			result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			result.error("sku信息不存在");
+		} else {
+			// 更新卡券sku详情
+			for (Map<String, Object> bossGoodsCardSkuMap : bossGoodsCardSkuMapList) {
+				GoodsCardSku bossGoodsCardSku = new GoodsCardSku();
+				bossGoodsCardSku.setId(Long.parseLong(String.valueOf(bossGoodsCardSkuMap.get("id"))));
+				bossGoodsCardSku.setSdId(String.valueOf(bossGoodsCardSkuMap.get("sdId")));
+				goodsCardSkuService.updateById(bossGoodsCardSku);
+
+				QueryWrapper<GoodsCardSkuPlatforminfo> queryWrapperSku = new QueryWrapper<GoodsCardSkuPlatforminfo>();
+				queryWrapperSku.eq("gcs_id", bossGoodsCardSku.getId());
+
+				@SuppressWarnings("unchecked")
+				List<Map<String, Object>> skuCardPlatformInfoList = (List<Map<String, Object>>) bossGoodsCardSkuMap
+						.get("skuCardPlatformInfoList");
+				if (!skuCardPlatformInfoList.isEmpty()) {
+					for (int j = 0; j < skuCardPlatformInfoList.size(); j++) {
+						HashMap<String, Object> Infomap = (HashMap<String, Object>) skuCardPlatformInfoList.get(j);
+						GoodsCardSkuPlatforminfo bossGoodsCardskuPlatformInfo = new GoodsCardSkuPlatforminfo();
+						bossGoodsCardskuPlatformInfo.setId(Long.parseLong(String.valueOf(Infomap.get("id"))));
+						bossGoodsCardskuPlatformInfo.setSkuCoverPhoto(String.valueOf(Infomap.get("skuCoverPhoto")));
+						bossGoodsCardskuPlatformInfo.setSkuMainPhoto(String.valueOf(Infomap.get("skuMainPhoto")));
+						bossGoodsCardskuPlatformInfo.setSkuDesc(String.valueOf(Infomap.get("skuDesc")));
+						bossGoodsCardskuPlatformInfo.setPmId(Long.parseLong(String.valueOf(Infomap.get("pmId"))));
+						goodsCardSkuPlatforminfoService.updateById(bossGoodsCardskuPlatformInfo);
 					}
 				}
-			
-			}
-			result.success("修改成功");
-		}
-		// 上架，下架，作废
-		else if (updateSign.equals("updateGoodsCardWithStatus")) {
-			String id = String.valueOf(param.getGcId());
-			String status = String.valueOf(param.getStatus());
-			if (TextUtils.isEmptys(id, status)) {
-				logger.error("请求参数为空，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
-			}
-			GoodsCard goodsCardCheck = goodsCardService.getById(id);
-			if (goodsCardCheck == null) {
-				logger.error("商品不存在！");
-				result.error("商品不存在！");
-				return result;
-			}
-			// 上架,,只能修改下架的
-			if (status.equals(DBDictionaryEnumManager.goods_0.getkey())) {
-				if (goodsCardCheck.getGoodStatus().equals(DBDictionaryEnumManager.goods_1.getkey())) {
-					GoodsCard goodsCard = new GoodsCard();
-					goodsCard.setId(Long.parseLong(id));
-					goodsCard.setGoodStatus(status);
-					goodsCardService.updateById(goodsCard);
-					result.success("修改成功");
-				} else {
-					result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					result.error("修改失败，状态不为下架不能上架");
-					return result;
-				}
-			}
-			// 下架,,只能修改上架的
-			else if (status.equals(DBDictionaryEnumManager.goods_1.getkey())) {
-				if (goodsCardCheck.getGoodStatus().equals(DBDictionaryEnumManager.goods_0.getkey())) {
-					GoodsCard goodsCard = new GoodsCard();
-					goodsCard.setId(Long.parseLong(id));
-					goodsCard.setGoodStatus(status);
-					goodsCardService.updateById(goodsCard);
-					result.success("修改成功");
-				} else {
-					result.error("修改失败，状态不为上架不能下架");
-					return result;
-				}
-			}
-			// 作废,,只能修改非作废的
-			else if (status.equals(DBDictionaryEnumManager.goods_2.getkey())) {
-				if (goodsCardCheck.getGoodStatus().equals(DBDictionaryEnumManager.goods_2.getkey())) {
-					result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-					result.error("修改失败，状态不为下架不能启用");
-					return result;
-				} else {
-					GoodsCard goodsCard = new GoodsCard();
-					goodsCard.setId(Long.parseLong(id));
-					goodsCard.setGoodStatus(status);
-					goodsCardService.updateById(goodsCard);
-					result.success("修改成功");
-				}
-			} else {
-				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
-				result.error("修改失败，参数异常");
-				return result;
-			}
-		}
-		// 审核
-		else if (updateSign.equals("reviewGoodsCard")) {
-			String id = String.valueOf(param.getGcId()); 
-			String reviewStatus =param.getReviewStatus();
-			String reviewRemarks = param.getReviewRemarks();
-			if (TextUtils.isEmptys(id, reviewStatus, reviewRemarks)) {
-				logger.error("请求参数为空，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
-			}
-			GoodsCard goodsCardCheck = goodsCardService.getById(id);
-			if (goodsCardCheck == null) {
-				logger.error("商品不存在！");
-				result.error("商品不存在！");
-				return result;
-			}
-			if (goodsCardCheck.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey())) {
-				GoodsCard goodsCard = new GoodsCard();
-				goodsCard.setId(Long.parseLong(id));
-				goodsCard.setReviewStatus(reviewStatus);
-				goodsCard.setReviewRemarks(reviewRemarks);
-				goodsCardService.updateById(goodsCard);
-				result.success("审核成功");
-			} else {
-				logger.error("不为禁用状态，不可启用！");
-				result.error("不为禁用状态，不可启用！");
-				return result;
 			}
 
 		}
+		result.success("修改成功");
 		return result;
 	}
 
+	/**
+	 * 
+	 * *启用/禁用/作废卡券商品
+	 *
+	 * @param @param  param
+	 * @param @return
+	 * @return
+	 */
+	@RequestMapping(value = "/updateGoodsCardStatus", method = RequestMethod.POST)
+	@ApiOperation(value = "启用/禁用/作废卡券商品", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
+	public JsonResult<Object> updateGoodsCardStatus(@RequestBody updateGoodsCardAndSkuStatusDto param) {
+		JsonResult<Object> result = new JsonResult<Object>();
+		String id = String.valueOf(param.getGcId());
+		String status = String.valueOf(param.getGoodStatus());
+		if (TextUtils.isEmptys(id, status)) {
+			logger.error("请求参数为空，");
+			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+		}
+		GoodsCard goodsCardCheck = goodsCardService.getById(id);
+		if (goodsCardCheck == null) {
+			logger.error("商品不存在！");
+			result.error("商品不存在！");
+			return result;
+		}
+		// 上架,,只能修改下架的
+		if (status.equals(DBDictionaryEnumManager.goods_0.getkey())) {
+			if (goodsCardCheck.getGoodStatus().equals(DBDictionaryEnumManager.goods_1.getkey())) {
+				GoodsCard goodsCard = new GoodsCard();
+				goodsCard.setId(Long.parseLong(id));
+				goodsCard.setGoodStatus(status);
+				goodsCardService.updateById(goodsCard);
+				result.success("修改成功");
+				return result;
+			} else {
+				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				result.error("修改失败，状态不为下架不能上架");
+				return result;
+			}
+		}
+		// 下架,,只能修改上架的
+		else if (status.equals(DBDictionaryEnumManager.goods_1.getkey())) {
+			if (goodsCardCheck.getGoodStatus().equals(DBDictionaryEnumManager.goods_0.getkey())) {
+				GoodsCard goodsCard = new GoodsCard();
+				goodsCard.setId(Long.parseLong(id));
+				goodsCard.setGoodStatus(status);
+				goodsCardService.updateById(goodsCard);
+				result.success("修改成功");
+				return result;
+			} else {
+				result.error("修改失败，状态不为上架不能下架");
+				return result;
+			}
+		}
+		// 作废,,只能修改非作废的
+		else if (status.equals(DBDictionaryEnumManager.goods_2.getkey())) {
+			if (goodsCardCheck.getGoodStatus().equals(DBDictionaryEnumManager.goods_2.getkey())) {
+				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+				result.error("修改失败，状态不为下架不能启用");
+				return result;
+			} else {
+				GoodsCard goodsCard = new GoodsCard();
+				goodsCard.setId(Long.parseLong(id));
+				goodsCard.setGoodStatus(status);
+				goodsCardService.updateById(goodsCard);
+				result.success("修改成功");
+				return result;
+			}
+		} else {
+			result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
+			result.error("修改失败，参数异常");
+			return result;
+		}
+
+	}
+
+	/**
+	 * 
+	 * *审核卡券商品
+	 *
+	 * @param @param  param
+	 * @param @return
+	 * @return
+	 */
+	@RequestMapping(value = "/reviewGoodsCard", method = RequestMethod.POST)
+	@ApiOperation(value = "审核卡券商品", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
+	public JsonResult<Object> reviewGoodsCard(@RequestBody reviewGoodsCardAndSkuDto param) {
+		JsonResult<Object> result = new JsonResult<Object>();
+		String id = String.valueOf(param.getGcId());
+		String reviewStatus = param.getReviewStatus();
+		String reviewRemarks = param.getReviewRemarks();
+		if (TextUtils.isEmptys(id, reviewStatus, reviewRemarks)) {
+			logger.error("请求参数为空，");
+			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+		}
+		GoodsCard goodsCardCheck = goodsCardService.getById(id);
+		if (goodsCardCheck == null) {
+			logger.error("商品不存在！");
+			result.error("商品不存在！");
+			return result;
+		}
+		if (goodsCardCheck.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey())) {
+			GoodsCard goodsCard = new GoodsCard();
+			goodsCard.setId(Long.parseLong(id));
+			goodsCard.setReviewStatus(reviewStatus);
+			goodsCard.setReviewRemarks(reviewRemarks);
+			goodsCardService.updateById(goodsCard);
+			result.success("审核成功");
+		} else {
+			logger.error("不为禁用状态，不可启用！");
+			result.error("不为禁用状态，不可启用！");
+			return result;
+		}
+		return result;
+
+	}
 }

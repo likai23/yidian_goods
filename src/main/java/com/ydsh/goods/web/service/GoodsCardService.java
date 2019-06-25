@@ -33,7 +33,7 @@ public interface GoodsCardService extends IService<GoodsCard> {
 	* @param @return
 	* @return
 	 */
-	 Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page, GoodsCardAndSkuDto queryWrapper);
+	 Page<GoodsCardAndSkuDto> selectCardAndSKUPage(IPage<Map<String, Object>> page, GoodsCardAndSkuDto queryWrapper);
 	  /**
 	   * 
 	   * *连表查询 销售属性主表和副表
@@ -43,5 +43,5 @@ public interface GoodsCardService extends IService<GoodsCard> {
 	   * @param @return
 	   * @return
 	   */
-	  Map<String, Object> selectCardAndSKUPage(@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper);
+	 GoodsCardAndSkuDto selectCardAndSKUPage(@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper);
 }

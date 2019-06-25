@@ -44,7 +44,7 @@ public class GoodsCardServiceImpl  extends ServiceImpl<GoodsCardDao, GoodsCard> 
 	* @return
 	 */
 	@Override
-	public Page<Map<String, Object>> selectCardAndSKUPage(IPage<Map<String, Object>> page,
+	public Page<GoodsCardAndSkuDto> selectCardAndSKUPage(IPage<Map<String, Object>> page,
 			GoodsCardAndSkuDto queryWrapper) {
 		// TODO Auto-generated method stub
 		return goodsCardDao.selectCardAndSKUPage(page, queryWrapper);
@@ -58,7 +58,7 @@ public class GoodsCardServiceImpl  extends ServiceImpl<GoodsCardDao, GoodsCard> 
 	   * @param @return
 	   * @return
 	   */
-	  public Map<String, Object> selectCardAndSKUPage(@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper){
+	  public GoodsCardAndSkuDto selectCardAndSKUPage(@Param("queryWrapper") GoodsCardAndSkuDto queryWrapper){
 		  return goodsCardDao.selectCardAndSKUPage(queryWrapper);
 	  }
 }

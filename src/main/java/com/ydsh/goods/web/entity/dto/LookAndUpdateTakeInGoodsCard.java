@@ -1,5 +1,5 @@
 /**
- * @filename:GoodsPackage 2019-06-14 09:24:41
+ * @filename:GoodsCard 2019-06-14 09:24:40
  * @project ydsh-saas-service-goods  V1.0
  * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
@@ -14,13 +14,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 
 /**   
  * <p>代码自动生成，请勿修改</p>
  * 
- * <p>说明： 套餐商品管理实体类</P>
+ * <p>说明： 卡券商品表实体类</P>
  * @version: V1.0
  * @author: 戴艺辉
  * 
@@ -28,41 +30,37 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class GoodsPackageAndSkuDto implements Serializable {
+public class LookAndUpdateTakeInGoodsCard implements Serializable {
 
-	private static final long serialVersionUID = 1560475481193L;
+	private static final long serialVersionUID = 1560475480915L;
 	
 	@TableId(value = "id", type = IdType.AUTO)
 	@ApiModelProperty(name = "id" , value = "主键ID")
 	private Long id;
-	@ApiModelProperty(name = "gpNo" , value = "套餐编号")
-	private String gpNo;
-	@ApiModelProperty(name = "packageName" , value = "套餐名称")
-	private String packageName;
-	@ApiModelProperty(name = "packageForshort" , value = "套餐简称")
-	private String packageForshort;
-	@ApiModelProperty(name = "denomination" , value = "套餐面值")
-	private Integer denomination;
-	@ApiModelProperty(name = "packageStatus" , value = "套餐状态：上架，下架，作废")
-	private String packageStatus;
-	@ApiModelProperty(name = "reviewId" , value = "审批人")
+	@ApiModelProperty(name = "gcNo" , value = "商品编码id")
+	private String gcNo;
+	@ApiModelProperty(name = "goodName" , value = "商品名称")
+	private String goodName;
+	@ApiModelProperty(name = "goodForshort" , value = "商品简称")
+	private String goodForshort;
+	@ApiModelProperty(name = "goodAttribute" , value = "商品属性：1.卡券，2.空卡档，3.实体卡")
+	private String goodAttribute;
+	@ApiModelProperty(name = "goodType" , value = "商品类型：1.代金券，2.优惠券，3.兌换卷，4.免费劵，5.电子预付卡")
+	private String goodType;
+	@ApiModelProperty(name = "goodProperty" , value = "商品性质：1.自建，2.采购，3.实时抓码")
+	private String goodProperty;
+	@ApiModelProperty(name = "goodShape" , value = "卡券形式：1.卡号卡密，2.卡密，3.短链，4短链验证码")
+	private String goodShape;
+	@ApiModelProperty(name = "goodCategoryId" , value = "商品类目表id")
+	private String goodCategoryId;
+	@ApiModelProperty(name = "goodStatus" , value = "卡卷状态：1.上架，2.下架，3.作废")
+	private String goodStatus;
+	@ApiModelProperty(name = "reviewId" , value = "审核人id")
 	private String reviewId;
-	@ApiModelProperty(name = "reviewStatus" , value = "审批状态")
+	@ApiModelProperty(name = "reviewStatus" , value = "审批状态：0-待审核，1-审核通过，2-审核不通过")
 	private String reviewStatus;
 	@ApiModelProperty(name = "reviewRemarks" , value = "审批备注")
 	private String reviewRemarks;
-	@ApiModelProperty(name = "defaultAmount" , value = "默认指导价")
-	private String defaultAmount;
-	@ApiModelProperty(name = "noticketAmount" , value = "不带票指导价")
-	private String noticketAmount;
-	@ApiModelProperty(name = "ticketSomeamount" , value = "带票同行价")
-	private String ticketSomeamount;
-	@ApiModelProperty(name = "noticketSomeamount" , value = "不带票同行价")
-	private String noticketSomeamount;
-	@ApiModelProperty(name = "ticketAmount" , value = "带票指导价")
-	private String ticketAmount;
-	@ApiModelProperty(name = "remarks" , value = "备注")
-	private String remarks;
 	@ApiModelProperty(name = "createId" , value = "创建人ID")
 	private Long createId;
 	@ApiModelProperty(name = "updateId" , value = "修改人ID")
@@ -77,11 +75,6 @@ public class GoodsPackageAndSkuDto implements Serializable {
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
 	@ApiModelProperty(name = "updateTime" , value = "修改时间（自动生成, MySQL 5.7+）")
 	private Date updateTime;
-	@TableId(value = "id", type = IdType.AUTO)
-	@ApiModelProperty(name = "gpiId" , value = "套餐对应sku表的id")
-	private Long gpiId;
-	@ApiModelProperty(name = "gcsId" , value = "卡券商品或者直充商品sku的id")
-	private Long gcsId;
-	@ApiModelProperty(name = "account" , value = "数量")
-	private Integer account;
+	@ApiModelProperty(name = "GoodsCardSkuDtoList" , value = "商品关联的sku集合")
+	private List<GoodsCardSkuDto> GoodsCardSkuDtoList;
 }

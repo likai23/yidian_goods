@@ -8,14 +8,16 @@ package com.ydsh.goods.web.controller;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.common.collect.Maps;
 import com.ydsh.generator.common.JsonResult;
 import com.ydsh.goods.common.db.DBKeyGenerator;
 import com.ydsh.goods.common.enums.DBBusinessKeyTypeEnums;
@@ -42,6 +43,7 @@ import com.ydsh.goods.web.entity.dto.GoodsCardAndSkuDto;
 import com.ydsh.goods.web.entity.dto.GoodsPublicPriceAndGoodsDto;
 import com.ydsh.goods.web.entity.dto.GoodsPublicPriceGoodsDto;
 import com.ydsh.goods.web.entity.dto.LookAndUpdateTakeInGoodsPublicPriceDto;
+import com.ydsh.goods.web.entity.dto.LookRetrunGoodsPublicPriceDto;
 import com.ydsh.goods.web.entity.dto.RemoveGoodsPublicPriceDto;
 import com.ydsh.goods.web.entity.dto.ReviewGoodsPublicPriceDto;
 import com.ydsh.goods.web.service.GoodsCardService;
@@ -86,130 +88,132 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 	@Autowired
 	private GoodsPackageService goodsPackageService;
 
-	
 	/**
 	 * 
-	 * 1-修改进入查看供应价调整单 
-	 * 2-查看供应价调整单详情
+	 *  *查看供应价调整单详情
 	 * 
 	 * @param @param  param
 	 * @param @return
 	 * @return
 	 */
 	@RequestMapping(value = "/lookGoodsPrice", method = RequestMethod.POST)
-	@ApiOperation(value = "新增或修改供应价调整单", notes = "作者：戴艺辉")
-	public JsonResult<Object> lookGoodsPrice(@RequestBody LookAndUpdateTakeInGoodsPublicPriceDto param) {
-		String lookSign = param.getLookSign();
-		JsonResult<Object> returnPage = new JsonResult<Object>();
-		if (TextUtils.isEmpty(lookSign)) {
-			logger.error("参数不能为空");
+	@ApiOperation(value = "查看供应价调整单详情", notes = "作者：戴艺辉")
+	public JsonResult<LookRetrunGoodsPublicPriceDto> lookGoodsPrice(@RequestBody LookAndUpdateTakeInGoodsPublicPriceDto param) {
+		JsonResult<LookRetrunGoodsPublicPriceDto> returnPage = new JsonResult<LookRetrunGoodsPublicPriceDto>();
+		// 查看
+		Long id = param.getId();
+		if(id==null) {
+			logger.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
-		switch (lookSign) {
-		// 修改入口
-		// 修改时 ：只能查看未审核的
-		case "updateTakeIn": {
-			Long id = param.getId();
-			QueryWrapper<GoodsPublicPrice> queryWrapper = new QueryWrapper<GoodsPublicPrice>();
-			queryWrapper.eq("id", id);
-			Map<String, Object> goodsPublicPrice = baseService.getMap(queryWrapper);
-			// 审核状态不为0，则报异常
-			if (!((String) goodsPublicPrice.get("review_status")).equals(DBDictionaryEnumManager.review_0.getkey())) {
-				logger.error("不是待审核状态，不允许修改！");
-				returnPage.error("不是待审核状态，不允许修改！");
-				return returnPage;
-			}
-			QueryWrapper<GoodsPublicPriceGoods> queryWrapperSecond = new QueryWrapper<GoodsPublicPriceGoods>();
-			queryWrapper.eq("gpp_id", id);
-			List<Map<String, Object>> goodsPublicPriceGoods = goodsPublicPriceGoodsService.listMaps(queryWrapperSecond);
-			List<Map<String, Object>> listAdd = new LinkedList<Map<String, Object>>();
-
-			// 如果是卡券商品
-			String goodsType = (String) goodsPublicPrice.get("goods_type");
-			if (goodsType.equals(DBDictionaryEnumManager.goods_card.getkey())) {
-				for (Map<String, Object> var2 : goodsPublicPriceGoods) {
-					String goodsId = String.valueOf(var2.get("goods_id"));
-					GoodsCardAndSkuDto goodsCardAndSku = new GoodsCardAndSkuDto();
-					goodsCardAndSku.setGcsId(Long.parseLong(goodsId));
-					Map<String, Object> bossGoodsCardSku = goodsCardService.selectCardAndSKUPage(goodsCardAndSku);
-					if (bossGoodsCardSku != null) {
-						listAdd.add(bossGoodsCardSku);
-					}
+		QueryWrapper<GoodsPublicPrice> queryWrapper = new QueryWrapper<GoodsPublicPrice>();
+		queryWrapper.eq("id", id);
+		GoodsPublicPrice goodsPublicPrice = baseService.getById(id);
+		LookRetrunGoodsPublicPriceDto goodsPublicPriceDto=new LookRetrunGoodsPublicPriceDto();
+		BeanUtils.copyProperties(goodsPublicPrice, goodsPublicPriceDto);
+		QueryWrapper<GoodsPublicPriceGoods> queryWrapperSecond = new QueryWrapper<GoodsPublicPriceGoods>();
+		queryWrapper.eq("gpp_id", id);
+		List<Map<String, Object>> goodsPublicPriceGoods = goodsPublicPriceGoodsService.listMaps(queryWrapperSecond);
+		// 如果是卡券商品
+		String goodsType = (String) goodsPublicPrice.getGoodsType();
+		if (goodsType.equals(DBDictionaryEnumManager.goods_card.getkey())) {
+			List<GoodsCardAndSkuDto> listAdd = new LinkedList<GoodsCardAndSkuDto>();
+			for (Map<String, Object> var2 : goodsPublicPriceGoods) {
+				String goodsId = String.valueOf(var2.get("goods_id"));
+				GoodsCardAndSkuDto goodsCardAndSku = new GoodsCardAndSkuDto();
+				goodsCardAndSku.setGcsId(Long.parseLong(goodsId));
+				GoodsCardAndSkuDto bossGoodsCardSku = goodsCardService.selectCardAndSKUPage(goodsCardAndSku);
+				if (bossGoodsCardSku != null) {
+					listAdd.add(bossGoodsCardSku);
 				}
-				goodsPublicPrice.put("skuList", listAdd);
-				returnPage.success("查询成功！");
-				returnPage.setData(goodsPublicPrice);
-				return returnPage;
 			}
-			// 如果是套餐商品
-			else if (goodsType.equals(DBDictionaryEnumManager.package_card.getkey())) {
-				for (Map<String, Object> var2 : goodsPublicPriceGoods) {
-					String goodsId = String.valueOf(var2.get("goods_id"));
-					QueryWrapper<GoodsPackage> GoodsPackageWrapper = new QueryWrapper<GoodsPackage>();
-					queryWrapper.eq("id", goodsId);
-					Map<String, Object> map = goodsPackageService.getMap(GoodsPackageWrapper);
-					listAdd.add(map);
-				}
-				goodsPublicPrice.put("packageList", listAdd);
-				returnPage.success("查询成功！");
-				returnPage.setData(goodsPublicPrice);
-				return returnPage;
-			} else {
-				logger.error("参数异常，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
-			}
+			goodsPublicPriceDto.setSkuList(listAdd);
+			returnPage.success("查询成功！");
+			returnPage.setData(goodsPublicPriceDto);
+			return returnPage;
 		}
-		// 查看
-		case "lookSign": {
-			Long id = param.getId();
-			QueryWrapper<GoodsPublicPrice> queryWrapper = new QueryWrapper<GoodsPublicPrice>();
-			queryWrapper.eq("id", id);
-			Map<String, Object> goodsPublicPrice = baseService.getMap(queryWrapper);
-			QueryWrapper<GoodsPublicPriceGoods> queryWrapperSecond = new QueryWrapper<GoodsPublicPriceGoods>();
-			queryWrapper.eq("gpp_id", id);
-			List<Map<String, Object>> goodsPublicPriceGoods = goodsPublicPriceGoodsService.listMaps(queryWrapperSecond);
-			List<Map<String, Object>> listAdd = new LinkedList<Map<String, Object>>();
-
-			// 如果是卡券商品
-			String goodsType = (String) goodsPublicPrice.get("goods_type");
-			if (goodsType.equals(DBDictionaryEnumManager.goods_card.getkey())) {
-				for (Map<String, Object> var2 : goodsPublicPriceGoods) {
-					String goodsId = String.valueOf(var2.get("goods_id"));
-					GoodsCardAndSkuDto goodsCardAndSku = new GoodsCardAndSkuDto();
-					goodsCardAndSku.setGcsId(Long.parseLong(goodsId));
-					Map<String, Object> bossGoodsCardSku = goodsCardService.selectCardAndSKUPage(goodsCardAndSku);
-					if (bossGoodsCardSku != null) {
-						listAdd.add(bossGoodsCardSku);
-					}
-				}
-				goodsPublicPrice.put("skuList", listAdd);
-				returnPage.success("查询成功！");
-				returnPage.setData(goodsPublicPrice);
-				return returnPage;
+		// 如果是套餐商品
+		else if (goodsType.equals(DBDictionaryEnumManager.package_card.getkey())) {
+			List<GoodsPackage> listAdd = new LinkedList<GoodsPackage>();
+			for (Map<String, Object> var2 : goodsPublicPriceGoods) {
+				String goodsId = String.valueOf(var2.get("goods_id"));
+				GoodsPackage map = goodsPackageService.getById(goodsId);
+				listAdd.add(map);
 			}
-			// 如果是套餐商品
-			else if (goodsType.equals(DBDictionaryEnumManager.package_card.getkey())) {
-				for (Map<String, Object> var2 : goodsPublicPriceGoods) {
-					String goodsId = String.valueOf(var2.get("goods_id"));
-					QueryWrapper<GoodsPackage> GoodsPackageWrapper = new QueryWrapper<GoodsPackage>();
-					queryWrapper.eq("id", goodsId);
-					Map<String, Object> map = goodsPackageService.getMap(GoodsPackageWrapper);
-					listAdd.add(map);
-				}
-				goodsPublicPrice.put("packageList", listAdd);
-				returnPage.success("查询成功！");
-				returnPage.setData(goodsPublicPrice);
-				return returnPage;
-			} else {
-				logger.error("参数异常，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
-			}
-
-		}
-		default: {
+			goodsPublicPriceDto.setPackageList(listAdd);
+			returnPage.success("查询成功！");
+			returnPage.setData(goodsPublicPriceDto);
+			return returnPage;
+		} else {
 			logger.error("参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
 		}
+	}
+
+	/**
+	 * 
+	 * *修改进入查看供应价调整单
+	 * 
+	 * @param @param  param
+	 * @param @return
+	 * @return
+	 */
+	@RequestMapping(value = "/updateTakeInGoodsPrice", method = RequestMethod.POST)
+	@ApiOperation(value = "修改进入查看供应价调整单", notes = "作者：戴艺辉")
+	public JsonResult<Object> updateTakeInGoodsPrice(@RequestBody LookAndUpdateTakeInGoodsPublicPriceDto param) {
+		JsonResult<Object> returnPage = new JsonResult<Object>();
+		Long id = param.getId();
+		if(TextUtils.isEmpty(String.valueOf(id))) {
+			logger.error("请求参数为空，");
+			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+		}
+		QueryWrapper<GoodsPublicPrice> queryWrapper = new QueryWrapper<GoodsPublicPrice>();
+		queryWrapper.eq("id", id);
+		GoodsPublicPrice goodsPublicPrice = baseService.getById(id);
+		// 审核状态不为0，则报异常
+		if (!(goodsPublicPrice.getReviewStatus()).equals(DBDictionaryEnumManager.review_0.getkey())) {
+			logger.error("不是待审核状态，不允许修改！");
+			returnPage.error("不是待审核状态，不允许修改！");
+			return returnPage;
+		}
+		LookRetrunGoodsPublicPriceDto goodsPublicPriceDto=new LookRetrunGoodsPublicPriceDto();
+		BeanUtils.copyProperties(goodsPublicPrice, goodsPublicPriceDto);
+		QueryWrapper<GoodsPublicPriceGoods> queryWrapperSecond = new QueryWrapper<GoodsPublicPriceGoods>();
+		queryWrapper.eq("gpp_id", id);
+		List<Map<String, Object>> goodsPublicPriceGoods = goodsPublicPriceGoodsService.listMaps(queryWrapperSecond);
+		// 如果是卡券商品
+		String goodsType = (String) goodsPublicPrice.getGoodsType();
+		if (goodsType.equals(DBDictionaryEnumManager.goods_card.getkey())) {
+			List<GoodsCardAndSkuDto> listAdd = new LinkedList<GoodsCardAndSkuDto>();
+			for (Map<String, Object> var2 : goodsPublicPriceGoods) {
+				String goodsId = String.valueOf(var2.get("goods_id"));
+				GoodsCardAndSkuDto goodsCardAndSku = new GoodsCardAndSkuDto();
+				goodsCardAndSku.setGcsId(Long.parseLong(goodsId));
+				GoodsCardAndSkuDto bossGoodsCardSku = goodsCardService.selectCardAndSKUPage(goodsCardAndSku);
+				if (bossGoodsCardSku != null) {
+					listAdd.add(bossGoodsCardSku);
+				}
+			}
+			goodsPublicPriceDto.setSkuList(listAdd);
+			returnPage.success("查询成功！");
+			returnPage.setData(goodsPublicPriceDto);
+			return returnPage;
+		}
+		// 如果是套餐商品
+		else if (goodsType.equals(DBDictionaryEnumManager.package_card.getkey())) {
+			List<GoodsPackage> listAdd = new LinkedList<GoodsPackage>();
+			for (Map<String, Object> var2 : goodsPublicPriceGoods) {
+				String goodsId = String.valueOf(var2.get("goods_id"));
+				GoodsPackage map = goodsPackageService.getById(goodsId);
+				listAdd.add(map);
+			}
+			goodsPublicPriceDto.setPackageList(listAdd);
+			returnPage.success("查询成功！");
+			returnPage.setData(goodsPublicPriceDto);
+			return returnPage;
+		} else {
+			logger.error("参数异常，");
+			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
 		}
 	}
 
@@ -377,7 +381,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 
 	/**
 	 * 
-	 * *删除供应价调整单
+	 * *审核供应价调整单
 	 * 
 	 * @param @param  param
 	 * @param @return
@@ -423,22 +427,32 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 				if ((goodsPublicPriceCheck.getGoodsType()).equals(DBDictionaryEnumManager.goods_card.getkey())) {
 					GoodsCardSku bossGoodsCardSku = new GoodsCardSku();
 					bossGoodsCardSku.setId(var2.getGoodsId());
-					bossGoodsCardSku.setDefaultAmount(var2.getDefaultAmount());
-					bossGoodsCardSku.setNoticketAmount(var2.getNoticketAmount());
-					bossGoodsCardSku.setTicketSomeamount(var2.getTicketSomeamount());
-					bossGoodsCardSku.setNoticketSomeamount(var2.getNoticketSomeamount());
-					bossGoodsCardSku.setTicketAmount(var2.getTicketAmount());
+					bossGoodsCardSku.setDefaultAmount(
+							new BigDecimal(var2.getDefaultAmount()).multiply(new BigDecimal("0.0001")).longValue());
+					bossGoodsCardSku.setNoticketAmount(
+							new BigDecimal(var2.getNoticketAmount()).multiply(new BigDecimal("0.0001")).longValue());
+					bossGoodsCardSku.setTicketSomeamount(
+							new BigDecimal(var2.getTicketSomeamount()).multiply(new BigDecimal("0.0001")).longValue());
+					bossGoodsCardSku.setNoticketSomeamount(new BigDecimal(var2.getNoticketSomeamount())
+							.multiply(new BigDecimal("0.0001")).longValue());
+					bossGoodsCardSku.setTicketAmount(
+							new BigDecimal(var2.getTicketAmount()).multiply(new BigDecimal("0.0001")).longValue());
 					goodsCardSkuService.updateById(bossGoodsCardSku);
 				}
 				// 如果是套餐商品
 				else if ((goodsPublicPriceCheck.getGoodsType()).equals(DBDictionaryEnumManager.package_card.getkey())) {
 					GoodsPackage bossGoodsPackage = new GoodsPackage();
 					bossGoodsPackage.setId(var2.getGoodsId());
-					bossGoodsPackage.setDefaultAmount(var2.getDefaultAmount());
-					bossGoodsPackage.setNoticketAmount(var2.getNoticketAmount());
-					bossGoodsPackage.setTicketSomeamount(var2.getTicketSomeamount());
-					bossGoodsPackage.setNoticketSomeamount(var2.getNoticketSomeamount());
-					bossGoodsPackage.setTicketAmount(var2.getTicketAmount());
+					bossGoodsPackage.setDefaultAmount(
+							new BigDecimal(var2.getDefaultAmount()).multiply(new BigDecimal("0.0001")).longValue());
+					bossGoodsPackage.setNoticketAmount(
+							new BigDecimal(var2.getNoticketAmount()).multiply(new BigDecimal("0.0001")).longValue());
+					bossGoodsPackage.setTicketSomeamount(
+							new BigDecimal(var2.getTicketSomeamount()).multiply(new BigDecimal("0.0001")).longValue());
+					bossGoodsPackage.setNoticketSomeamount(new BigDecimal(var2.getNoticketSomeamount())
+							.multiply(new BigDecimal("0.0001")).longValue());
+					bossGoodsPackage.setTicketAmount(
+							new BigDecimal(var2.getTicketAmount()).multiply(new BigDecimal("0.0001")).longValue());
 					goodsPackageService.updateById(bossGoodsPackage);
 				} else {
 					logger.error("参数异常，");

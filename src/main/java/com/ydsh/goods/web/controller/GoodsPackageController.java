@@ -39,6 +39,8 @@ import com.ydsh.goods.web.entity.GoodsPackagePlatform;
 import com.ydsh.goods.web.entity.dto.GoodsPackageAndSkuDto;
 import com.ydsh.goods.web.entity.dto.GoodsPackageDto;
 import com.ydsh.goods.web.entity.dto.LookAndUpdateInGoodsPackageDto;
+import com.ydsh.goods.web.entity.dto.reviewGoodsPackageDto;
+import com.ydsh.goods.web.entity.dto.updateGoodsPackageStatusDto;
 import com.ydsh.goods.web.service.GoodsPackageInfoService;
 import com.ydsh.goods.web.service.GoodsPackagePlatformService;
 import com.ydsh.goods.web.service.GoodsPackageService;
@@ -75,73 +77,71 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 	@Autowired
 	private GoodsPackagePlatformService goodsPackagePlatformService;
 
-	
 	/**
 	 * 
-	* 套餐商品分页查询
-	*
-	* @param @param pageParam
-	* @param @return
-	* @return
+	 * 套餐商品分页查询
+	 *
+	 * @param @param  pageParam
+	 * @param @return
+	 * @return
 	 */
-    @RequestMapping(value = "/getPackagePages",method = RequestMethod.GET)
+	@RequestMapping(value = "/getPackagePages", method = RequestMethod.GET)
 	@ApiOperation(value = "分页查询", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
-	public JsonResult<IPage<Map<String,Object>>> getPackagePages(PageParam<GoodsPackage> pageParam){
-		JsonResult<IPage<Map<String,Object>>> returnPage=new JsonResult<IPage<Map<String,Object>>>();
-		Page<GoodsPackage> page=new Page<GoodsPackage>(pageParam.getPageNum(),pageParam.getPageSize());
-		if(pageParam.getPageSize()>500) {
-			logger.error("分页最大限制500，" +pageParam);
+	public JsonResult<IPage<Map<String, Object>>> getPackagePages(PageParam<GoodsPackage> pageParam) {
+		JsonResult<IPage<Map<String, Object>>> returnPage = new JsonResult<IPage<Map<String, Object>>>();
+		Page<GoodsPackage> page = new Page<GoodsPackage>(pageParam.getPageNum(), pageParam.getPageSize());
+		if (pageParam.getPageSize() > 500) {
+			logger.error("分页最大限制500，" + pageParam);
 			returnPage.error("分页最大限制500");
 			return returnPage;
 		}
-		QueryWrapper<GoodsPackage> queryWrapper =new QueryWrapper<GoodsPackage>();
+		QueryWrapper<GoodsPackage> queryWrapper = new QueryWrapper<GoodsPackage>();
 		queryWrapper.setEntity(pageParam.getParam());
-		//分页数据
-		IPage<Map<String,Object>> pageData=baseService.pageMaps(page, queryWrapper);
-		List<Map<String,Object>> pageDataList=pageData.getRecords();
-		for(Map<String,Object> map: pageDataList) {
+		// 分页数据
+		IPage<Map<String, Object>> pageData = baseService.pageMaps(page, queryWrapper);
+		List<Map<String, Object>> pageDataList = pageData.getRecords();
+		for (Map<String, Object> map : pageDataList) {
 			QueryWrapper<GoodsPackageInfo> var = new QueryWrapper<GoodsPackageInfo>();
 			queryWrapper.eq("gp_id", map.get("id"));
 			List<Map<String, Object>> list1 = goodsPackageInfoService.listMaps(var);
 			map.put("商品数", list1.size());
 		}
 		returnPage.success(pageData);
-		
+
 		return returnPage;
 	}
-    
+
 	/**
 	 * 
-	* 套餐商品和关联sku分页查询
-	*
-	* @param @param pageParam
-	* @param @return
-	* @return
+	 * 套餐商品和关联sku分页查询
+	 *
+	 * @param @param  pageParam
+	 * @param @return
+	 * @return
 	 */
-    @RequestMapping(value = "/getPackageAndSkuPages",method = RequestMethod.GET)
+	@RequestMapping(value = "/getPackageAndSkuPages", method = RequestMethod.GET)
 	@ApiOperation(value = "套餐商品和关联sku分页查询", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
-	public JsonResult<Object> getPackageAndSkuPages(@RequestBody PageParam<GoodsPackageAndSkuDto> pageParam){
-		JsonResult<Object> returnPage=new JsonResult<Object>();
-		Page<Map<String,Object>> page=new Page<Map<String,Object>>(pageParam.getPageNum(),pageParam.getPageSize());
-		if(pageParam.getPageSize()>500) {
-			logger.error("分页最大限制500，" +pageParam);
+	public JsonResult<Object> getPackageAndSkuPages(@RequestBody PageParam<GoodsPackageAndSkuDto> pageParam) {
+		JsonResult<Object> returnPage = new JsonResult<Object>();
+		Page<Map<String, Object>> page = new Page<Map<String, Object>>(pageParam.getPageNum(), pageParam.getPageSize());
+		if (pageParam.getPageSize() > 500) {
+			logger.error("分页最大限制500，" + pageParam);
 			returnPage.error("分页最大限制500");
 			return returnPage;
 		}
-		QueryWrapper<GoodsPackageAndSkuDto> queryWrapper =new QueryWrapper<GoodsPackageAndSkuDto>();
+		QueryWrapper<GoodsPackageAndSkuDto> queryWrapper = new QueryWrapper<GoodsPackageAndSkuDto>();
 		queryWrapper.setEntity(pageParam.getParam());
-		if(queryWrapper.getEntity()==null) {
+		if (queryWrapper.getEntity() == null) {
 			queryWrapper.setEntity(new GoodsPackageAndSkuDto());
 		}
-		//分页数据
-		IPage<GoodsPackageAndSkuDto> pageData=baseService.getPackageAndSkuPages(page, queryWrapper.getEntity());
-		
-		
+		// 分页数据
+		IPage<GoodsPackageAndSkuDto> pageData = baseService.getPackageAndSkuPages(page, queryWrapper.getEntity());
+
 		returnPage.success(pageData);
-		
+
 		return returnPage;
 	}
-    
+
 	/**
 	 * 
 	 * 保存套餐商品
@@ -212,7 +212,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 
 	/**
 	 * 
-	 * 1-修改套餐商品 2-修改套餐商品状态 3-审核套餐商品
+	 * * 修改套餐商品
 	 * 
 	 * @param @param  context
 	 * @param @return
@@ -225,165 +225,189 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 	public JsonResult<Object> updatePackageGoods(@RequestBody GoodsPackageDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		GoodsPackage bossGoodsPackage = new GoodsPackage();
-		String updateSign = param.getUpdateSign();
-		if (TextUtils.isEmpty(updateSign)) {
+		// 修改套餐商品
+		String id = String.valueOf(param.getId());
+		String gpNo = param.getGpNo();
+		String packageName = param.getPackageName();
+		String packageForshort = param.getPackageForshort();
+		String denomination = String.valueOf(param.getDenomination());
+		String packageStatus = param.getPackageStatus();
+		if (TextUtils.isEmptys(id, gpNo, packageName, denomination)) {
 			logger.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
-		// 修改套餐商品
-		if (updateSign.equals("updatePackage")) {
-			String id = String.valueOf(param.getId());
-			String gpNo = param.getGpNo(); 
-			String packageName = param.getPackageName(); 
-			String packageForshort = param.getPackageForshort(); 
-			String denomination = String.valueOf(param.getDenomination()); 
-			String packageStatus = param.getPackageStatus();  
-			if (TextUtils.isEmptys(id, gpNo, packageName, denomination)) {
-				logger.error("请求参数为空，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
-			}
-			QueryWrapper<GoodsPackage> queryWrapperCheck = new QueryWrapper<GoodsPackage>();
-			queryWrapperCheck.eq("package_name", packageName);
-			Map<String, Object> var = goodsPackageService.getMap(queryWrapperCheck);
-			if (!(var == null || var.isEmpty())) {
-				logger.error("套餐名称不能重复，");
-				result.error("套餐名称不能重复！");
-				return result;
-			}
-			bossGoodsPackage.setId(Long.parseLong(id));
-			bossGoodsPackage.setGpNo(gpNo);
-			bossGoodsPackage.setPackageName(packageName);
-			bossGoodsPackage.setPackageForshort(packageForshort);
-			bossGoodsPackage.setDenomination(new Integer(denomination));
-			bossGoodsPackage.setPackageStatus(packageStatus);
-			goodsPackageService.updateById(bossGoodsPackage);
-			// 查询套餐id下是否有sku信息
-			QueryWrapper<GoodsPackageInfo> queryWrapper = new QueryWrapper<GoodsPackageInfo>();
-			queryWrapper.eq("gp_id", id);
-			List<Map<String, Object>> list1 = goodsPackageInfoService.listMaps(queryWrapper);
-			if (!(list1 == null || list1.isEmpty())) {
-				// 物理删除
-				for (Map<String, Object> map : list1) {
-					goodsPackageInfoService.removeById(String.valueOf(map.get("id")));
-				}
-			}
-			// 套餐下的sku
-			List<Map<String, Object>> skuPackageList = param.getSkuPackageList();
-			if (!(skuPackageList == null || skuPackageList.isEmpty())) {
-				for (Map<String, Object> var2 : skuPackageList) {
-					GoodsPackageInfo bossGoodsPackageInfo = new GoodsPackageInfo();
-					bossGoodsPackageInfo.setGpId(bossGoodsPackage.getId());
-					bossGoodsPackageInfo.setGcsId(Long.parseLong(String.valueOf(var2.get("skuId"))));
-					bossGoodsPackageInfo.setAccount(Integer.parseInt(String.valueOf(var2.get("account"))));
-					goodsPackageInfoService.save(bossGoodsPackageInfo);
-				}
-			}
-			QueryWrapper<GoodsPackagePlatform> queryWrapperSecond = new QueryWrapper<GoodsPackagePlatform>();
-			queryWrapperSecond.eq("gp_id", id);
-			List<Map<String, Object>> list2 = goodsPackagePlatformService.listMaps(queryWrapperSecond);
-			if (!(list2 == null || list2.isEmpty())) {
-				// 物理删除
-				for (Map<String, Object> map : list2) {
-					goodsPackagePlatformService.removeById(String.valueOf(map.get("id")));
-				}
-			}
-			// 套餐下的平台详情
-			List<Map<String, Object>> platFromList = param.getPackageList();
-			if (!(platFromList == null || platFromList.isEmpty())) {
-				for (Map<String, Object> var2 : platFromList) {
-					GoodsPackagePlatform bossGoodsPackagePlatform = new GoodsPackagePlatform();
-					bossGoodsPackagePlatform.setGpId(bossGoodsPackage.getId());
-					bossGoodsPackagePlatform.setPmId(Long.parseLong(String.valueOf(var2.get("pmId"))));
-					bossGoodsPackagePlatform.setSkuCoverPhoto(String.valueOf(var2.get("coverPhoto")));
-					bossGoodsPackagePlatform.setSkuMainPhoto(String.valueOf(var2.get("mainPhoto")));
-					goodsPackagePlatformService.save(bossGoodsPackagePlatform);
-				}
-			}
-			result.success("修改成功");
+		QueryWrapper<GoodsPackage> queryWrapperCheck = new QueryWrapper<GoodsPackage>();
+		queryWrapperCheck.eq("package_name", packageName);
+		Map<String, Object> var = goodsPackageService.getMap(queryWrapperCheck);
+		if (!(var == null || var.isEmpty())) {
+			logger.error("套餐名称不能重复，");
+			result.error("套餐名称不能重复！");
+			return result;
 		}
-		// 修改套餐商品状态
-		else if (updateSign.equals("updatePackageStatus")) {
-			String id = String.valueOf(param.getId());
-			String packageStatus = param.getPackageStatus();
-			if (TextUtils.isEmptys(id, packageStatus)) {
-				logger.error("请求参数为空，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+		bossGoodsPackage.setId(Long.parseLong(id));
+		bossGoodsPackage.setGpNo(gpNo);
+		bossGoodsPackage.setPackageName(packageName);
+		bossGoodsPackage.setPackageForshort(packageForshort);
+		bossGoodsPackage.setDenomination(new Integer(denomination));
+		bossGoodsPackage.setPackageStatus(packageStatus);
+		goodsPackageService.updateById(bossGoodsPackage);
+		// 查询套餐id下是否有sku信息
+		QueryWrapper<GoodsPackageInfo> queryWrapper = new QueryWrapper<GoodsPackageInfo>();
+		queryWrapper.eq("gp_id", id);
+		List<Map<String, Object>> list1 = goodsPackageInfoService.listMaps(queryWrapper);
+		if (!(list1 == null || list1.isEmpty())) {
+			// 物理删除
+			for (Map<String, Object> map : list1) {
+				goodsPackageInfoService.removeById(String.valueOf(map.get("id")));
 			}
-			GoodsPackage goodsPackageCheck = baseService.getById(id);
-			// 上架
-			if (packageStatus.equals(DBDictionaryEnumManager.goods_0.getkey())) {
-				if (goodsPackageCheck.getPackageStatus().equals(DBDictionaryEnumManager.goods_1.getkey())) {
-					GoodsPackage goodsPackage = new GoodsPackage();
-					goodsPackage.setId(Long.parseLong(id));
-					goodsPackage.setPackageStatus(packageStatus);
-					baseService.updateById(goodsPackage);
-					result.success("修改成功");
-				} else {
-					logger.error("状态不为下架，不可更改为上架！");
-					result.error("状态不为下架，不可更改为上架！");
-					return result;
-				}
+		}
+		// 套餐下的sku
+		List<Map<String, Object>> skuPackageList = param.getSkuPackageList();
+		if (!(skuPackageList == null || skuPackageList.isEmpty())) {
+			for (Map<String, Object> var2 : skuPackageList) {
+				GoodsPackageInfo bossGoodsPackageInfo = new GoodsPackageInfo();
+				bossGoodsPackageInfo.setGpId(bossGoodsPackage.getId());
+				bossGoodsPackageInfo.setGcsId(Long.parseLong(String.valueOf(var2.get("skuId"))));
+				bossGoodsPackageInfo.setAccount(Integer.parseInt(String.valueOf(var2.get("account"))));
+				goodsPackageInfoService.save(bossGoodsPackageInfo);
 			}
-			// 下架
-			else if (packageStatus.equals(DBDictionaryEnumManager.goods_1.getkey())) {
-				if (goodsPackageCheck.getPackageStatus().equals(DBDictionaryEnumManager.goods_0.getkey())) {
-					GoodsPackage goodsPackage = new GoodsPackage();
-					goodsPackage.setId(Long.parseLong(id));
-					goodsPackage.setPackageStatus(packageStatus);
-					baseService.updateById(goodsPackage);
-					result.success("修改成功");
-				} else {
-					logger.error("状态不为上架，不可更改为上架！");
-					result.error("状态不为上架，不可更改为上架！");
-					return result;
-				}
+		}
+		QueryWrapper<GoodsPackagePlatform> queryWrapperSecond = new QueryWrapper<GoodsPackagePlatform>();
+		queryWrapperSecond.eq("gp_id", id);
+		List<Map<String, Object>> list2 = goodsPackagePlatformService.listMaps(queryWrapperSecond);
+		if (!(list2 == null || list2.isEmpty())) {
+			// 物理删除
+			for (Map<String, Object> map : list2) {
+				goodsPackagePlatformService.removeById(String.valueOf(map.get("id")));
 			}
-			// 作废
-			else if (packageStatus.equals(DBDictionaryEnumManager.goods_2.getkey())) {
-				if (goodsPackageCheck.getPackageStatus().equals(DBDictionaryEnumManager.goods_2.getkey())) {
-					logger.error("已作废，不可重复操作！");
-					result.error("已作废，不可重复操作！");
-					return result;
-				} else {
-					GoodsPackage goodsPackage = new GoodsPackage();
-					goodsPackage.setId(Long.parseLong(id));
-					goodsPackage.setPackageStatus(packageStatus);
-					baseService.updateById(goodsPackage);
-					result.setCode(SuccessCode.SYS_SUCCESS.getCode());
-					result.success("修改成功");
-				}
+		}
+		// 套餐下的平台详情
+		List<Map<String, Object>> platFromList = param.getPackageList();
+		if (!(platFromList == null || platFromList.isEmpty())) {
+			for (Map<String, Object> var2 : platFromList) {
+				GoodsPackagePlatform bossGoodsPackagePlatform = new GoodsPackagePlatform();
+				bossGoodsPackagePlatform.setGpId(bossGoodsPackage.getId());
+				bossGoodsPackagePlatform.setPmId(Long.parseLong(String.valueOf(var2.get("pmId"))));
+				bossGoodsPackagePlatform.setSkuCoverPhoto(String.valueOf(var2.get("coverPhoto")));
+				bossGoodsPackagePlatform.setSkuMainPhoto(String.valueOf(var2.get("mainPhoto")));
+				goodsPackagePlatformService.save(bossGoodsPackagePlatform);
+			}
+		}
+		result.success("修改成功");
+		return result;
+	}
+
+	/**
+	 * 
+	 * *修改套餐商品状态
+	 * 
+	 * @param @param  context
+	 * @param @return
+	 * @param @throws CoreException
+	 * @return
+	 */
+	@RequestMapping(value = "/updatePackageGoodsStatus", method = RequestMethod.POST)
+	@ApiOperation(value = "修改套餐商品状态", notes = "作者：戴艺辉")
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	public JsonResult<Object> updatePackageGoodsStatus(@RequestBody updateGoodsPackageStatusDto param) {
+		JsonResult<Object> result = new JsonResult<Object>();
+		String id = String.valueOf(param.getId());
+		String packageStatus = param.getPackageStatus();
+		if (TextUtils.isEmptys(id, packageStatus)) {
+			logger.error("请求参数为空，");
+			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+		}
+		GoodsPackage goodsPackageCheck = baseService.getById(id);
+		// 上架
+		if (packageStatus.equals(DBDictionaryEnumManager.goods_0.getkey())) {
+			if (goodsPackageCheck.getPackageStatus().equals(DBDictionaryEnumManager.goods_1.getkey())) {
+				GoodsPackage goodsPackage = new GoodsPackage();
+				goodsPackage.setId(Long.parseLong(id));
+				goodsPackage.setPackageStatus(packageStatus);
+				baseService.updateById(goodsPackage);
+				result.success("修改成功");
+				return result;
 			} else {
-				logger.error("请求参数异常，");
-				result.error("请求参数异常！");
+				logger.error("状态不为下架，不可更改为上架！");
+				result.error("状态不为下架，不可更改为上架！");
 				return result;
 			}
 		}
-		// 审核
-		else if (updateSign.equals("reviewPackage")) {
-			String id = String.valueOf(param.getId());
-			String reviewStatus = param.getReviewStatus(); 
-			String reviewRemarks = param.getReviewRemarks();
-			if (TextUtils.isEmptys(id, reviewStatus, reviewRemarks)) {
-				logger.error("请求参数为空，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+		// 下架
+		else if (packageStatus.equals(DBDictionaryEnumManager.goods_1.getkey())) {
+			if (goodsPackageCheck.getPackageStatus().equals(DBDictionaryEnumManager.goods_0.getkey())) {
+				GoodsPackage goodsPackage = new GoodsPackage();
+				goodsPackage.setId(Long.parseLong(id));
+				goodsPackage.setPackageStatus(packageStatus);
+				baseService.updateById(goodsPackage);
+				result.success("修改成功");
+				return result;
+			} else {
+				logger.error("状态不为上架，不可更改为上架！");
+				result.error("状态不为上架，不可更改为上架！");
+				return result;
 			}
-			GoodsPackage goodsPackageCheck = baseService.getById(id);
-			if (goodsPackageCheck == null) {
-				logger.error("请求参数为空，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
-			}
-			if (!(goodsPackageCheck.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey()))) {
-				logger.error("不为待审核状态，不允许审核");
-				result.error("不为待审核状态，不允许审核");
+		}
+		// 作废
+		else if (packageStatus.equals(DBDictionaryEnumManager.goods_2.getkey())) {
+			if (goodsPackageCheck.getPackageStatus().equals(DBDictionaryEnumManager.goods_2.getkey())) {
+				logger.error("已作废，不可重复操作！");
+				result.error("已作废，不可重复操作！");
 				return result;
 			} else {
 				GoodsPackage goodsPackage = new GoodsPackage();
 				goodsPackage.setId(Long.parseLong(id));
-				goodsPackage.setReviewStatus(reviewStatus);
-				goodsPackage.setReviewRemarks(reviewRemarks);
+				goodsPackage.setPackageStatus(packageStatus);
 				baseService.updateById(goodsPackage);
-				result.success("审核成功");
+				result.setCode(SuccessCode.SYS_SUCCESS.getCode());
+				result.success("修改成功");
+				return result;
 			}
+		} else {
+			logger.error("请求参数异常，");
+			result.error("请求参数异常！");
+			return result;
+		}
+
+	}
+
+	/**
+	 * 
+	 * *审核套餐商品
+	 * 
+	 * @param @param  context
+	 * @param @return
+	 * @param @throws CoreException
+	 * @return
+	 */
+	@RequestMapping(value = "/reviewPackageGoods", method = RequestMethod.POST)
+	@ApiOperation(value = "审核套餐商品", notes = "作者：戴艺辉")
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	public JsonResult<Object> reviewPackageGoods(@RequestBody reviewGoodsPackageDto param) {
+		JsonResult<Object> result = new JsonResult<Object>();
+		String id = String.valueOf(param.getId());
+		String reviewStatus = param.getReviewStatus();
+		String reviewRemarks = param.getReviewRemarks();
+		if (TextUtils.isEmptys(id, reviewStatus, reviewRemarks)) {
+			logger.error("请求参数为空，");
+			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+		}
+		GoodsPackage goodsPackageCheck = baseService.getById(id);
+		if (goodsPackageCheck == null) {
+			logger.error("请求参数为空，");
+			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+		}
+		if (!(goodsPackageCheck.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey()))) {
+			logger.error("不为待审核状态，不允许审核");
+			result.error("不为待审核状态，不允许审核");
+			return result;
+		} else {
+			GoodsPackage goodsPackage = new GoodsPackage();
+			goodsPackage.setId(Long.parseLong(id));
+			goodsPackage.setReviewStatus(reviewStatus);
+			goodsPackage.setReviewRemarks(reviewRemarks);
+			baseService.updateById(goodsPackage);
+			result.success("审核成功");
 		}
 		return result;
 	}
@@ -403,7 +427,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		JsonResult<Object> result = new JsonResult<Object>();
 		// 套餐id
 		String id = String.valueOf(param.getId());
-		// 修改进入 还是 查看进入: 修改进入值为1，查看进入值为2
+		// 修改进入 还是 查看进入: 修改进入值为1，查看进入值为
 		String lookSign = param.getLookSign();
 		if (TextUtils.isEmptys(id, lookSign)) {
 			logger.error("请求参数为空，");
