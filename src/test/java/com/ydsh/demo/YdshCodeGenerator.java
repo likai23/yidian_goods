@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiPredicate;
 
 /**
  * @Auth yaozhongjie
@@ -21,7 +20,7 @@ import java.util.function.BiPredicate;
  **/
 public class YdshCodeGenerator {
     // 基础信息：项目名、作者、版本
-    public static final String PROJECT = "ydsh-saas-service-goods";
+    public static final String PROJECT = "ydsh-saas-service-basis";
     public static final String AUTHOR = "戴艺辉";
     public static final String VERSION = "V1.0";
     // 数据库连接信息：连接URL、用户名、秘密、数据库名
