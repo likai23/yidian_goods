@@ -155,8 +155,8 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 	 */
 	@RequestMapping(value = "/updateTakeInGoodsPrice", method = RequestMethod.POST)
 	@ApiOperation(value = "修改进入查看供应价调整单", notes = "作者：戴艺辉")
-	public JsonResult<Object> updateTakeInGoodsPrice(@RequestBody LookAndUpdateTakeInGoodsPublicPriceDto param) {
-		JsonResult<Object> returnPage = new JsonResult<Object>();
+	public JsonResult<LookRetrunGoodsPublicPriceDto> updateTakeInGoodsPrice(@RequestBody LookAndUpdateTakeInGoodsPublicPriceDto param) {
+		JsonResult<LookRetrunGoodsPublicPriceDto> returnPage = new JsonResult<LookRetrunGoodsPublicPriceDto>();
 		Long id = param.getId();
 		if(TextUtils.isEmpty(String.valueOf(id))) {
 			log.error("请求参数为空，");

@@ -431,7 +431,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 			queryWrapper1.eq("gp_id", id);
 			List<GoodsPackageInfo> packageInfoList = goodsPackageInfoService.list(queryWrapper1);
 			QueryWrapper<GoodsPackagePlatform> queryWrapper2 = new QueryWrapper<GoodsPackagePlatform>();
-			queryWrapper.eq("gp_id", id);
+			queryWrapper2.eq("gp_id", id);
 			List<GoodsPackagePlatform> packagePlatformList = goodsPackagePlatformService.list(queryWrapper2);
 			goodsPackageDto.setSkuPackageList(packageInfoList);
 			goodsPackageDto.setPackageList(packagePlatformList);
@@ -455,7 +455,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 				queryWrapper1.eq("gp_id", id);
 				List<GoodsPackageInfo> packageInfoList = goodsPackageInfoService.list(queryWrapper1);
 				QueryWrapper<GoodsPackagePlatform> queryWrapper2 = new QueryWrapper<GoodsPackagePlatform>();
-				queryWrapper.eq("gp_id", id);
+				queryWrapper2.eq("gp_id", id);
 				List<GoodsPackagePlatform> packagePlatformList = goodsPackagePlatformService.list(queryWrapper2);
 				goodsPackageDto.setSkuPackageList(packageInfoList);
 				goodsPackageDto.setPackageList(packagePlatformList);
