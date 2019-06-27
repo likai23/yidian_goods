@@ -6,10 +6,18 @@
  */
 package com.ydsh.goods.web.controller;
 
+import java.sql.Timestamp;
+
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ydsh.generator.common.JsonResult;
 import com.ydsh.goods.common.enums.DBDictionaryEnumManager;
 import com.ydsh.goods.common.enums.ErrorCode;
-import com.ydsh.goods.common.enums.SuccessCode;
 import com.ydsh.goods.common.exception.SystemException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
@@ -17,19 +25,6 @@ import com.ydsh.goods.web.entity.GoodsAttributeManager;
 import com.ydsh.goods.web.entity.dto.GoodsAttributeManagerDto;
 import com.ydsh.goods.web.service.GoodsAttributeManagerService;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -56,11 +51,10 @@ public class GoodsAttributeManagerController
 
 	private Timestamp now = new Timestamp(System.currentTimeMillis());
 
-	private static Logger logger = LoggerFactory.getLogger(GoodsAttributeManagerController.class);
 
 	/**
 	 * 
-	 * 保存商品销售属性主表
+	 * *保存商品销售属性主表
 	 *
 	 * @param @param  context
 	 * @param @return
@@ -73,7 +67,7 @@ public class GoodsAttributeManagerController
 	public JsonResult<Object> saveAttributeMain(@RequestBody GoodsAttributeManager param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		if (param.getGcId() == null || param.getStatus() == null || param.getAttributeName() == null) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		baseService.save(param);
@@ -98,12 +92,12 @@ public class GoodsAttributeManagerController
 		String status = String.valueOf(param.getStatus());
 		String attributeName = param.getAttributeName();
 		if (TextUtils.isEmptys(id, gcId, status, attributeName)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsAttributeManager goodsAttributeManagerCheck = baseService.getById(id);
 		if (goodsAttributeManagerCheck == null) {
-			logger.error("请求参数异常，");
+			log.error("请求参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常", new Exception());
 		}
 		GoodsAttributeManager goodsAttributeManager = new GoodsAttributeManager();
@@ -134,12 +128,12 @@ public class GoodsAttributeManagerController
 		String id = String.valueOf(param.getId());
 		String status = String.valueOf(param.getStatus());
 		if (TextUtils.isEmptys(id, status)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsAttributeManager goodsAttributeManagerCheck = baseService.getById(id);
 		if (goodsAttributeManagerCheck == null) {
-			logger.error("请求参数异常，");
+			log.error("请求参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常", new Exception());
 		}
 		// 上架
@@ -152,7 +146,7 @@ public class GoodsAttributeManagerController
 				baseService.updateById(goodsAttributeManager);
 				result.success("修改成功！");
 			} else {
-				logger.error("不为禁用状态，不可启用！");
+				log.error("不为禁用状态，不可启用！");
 				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				result.error("不为禁用状态，不可启用！");
 			}
@@ -167,12 +161,12 @@ public class GoodsAttributeManagerController
 				baseService.updateById(goodsAttributeManager);
 				result.success("修改成功！");
 			} else {
-				logger.error("不为启用状态，不可禁用！");
+				log.error("不为启用状态，不可禁用！");
 				result.setCode(ErrorCode.ILLEGAL_ARGUMENT.getCode());
 				result.error("不为启用状态，不可禁用！");
 			}
 		} else {
-			logger.error("请求参数异常，");
+			log.error("请求参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常", new Exception());
 		}
 		return result;

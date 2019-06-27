@@ -6,10 +6,6 @@
  */
 package com.ydsh.goods.web.service.impl;
 
-import com.ydsh.goods.web.entity.GoodsCategory;
-import com.ydsh.goods.web.dao.GoodsCategoryDao;
-import com.ydsh.goods.web.service.GoodsCategoryService;
-
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
@@ -18,6 +14,10 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ydsh.goods.web.dao.GoodsCategoryDao;
+import com.ydsh.goods.web.entity.GoodsCategory;
+import com.ydsh.goods.web.entity.dto.GoodsCategoryDto;
+import com.ydsh.goods.web.service.GoodsCategoryService;
 
 /**   
  * <p>自定义serviceImpl写在这里</p>
@@ -41,7 +41,7 @@ public class GoodsCategoryServiceImpl  extends ServiceImpl<GoodsCategoryDao, Goo
     * @param @return
     * @return
      */
-    public IPage<Map<String, Object>> getGoodsCategoryPages(IPage<Map<String, Object>> page, @Param("queryWrapper") Map<String, Object> queryWrapper){
+    public IPage<GoodsCategoryDto> getGoodsCategoryPages(IPage<Map<String, Object>> page, @Param("queryWrapper") Map<String, Object> queryWrapper){
     	return goodsCategoryDao.getGoodsCategoryPages(page, queryWrapper);
     }
 }

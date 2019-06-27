@@ -8,15 +8,11 @@ package com.ydsh.goods.web.controller;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -75,7 +71,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GoodsPublicPriceController extends AbstractController<GoodsPublicPriceService, GoodsPublicPrice> {
 
-	private static Logger logger = LoggerFactory.getLogger(GoodsCardController.class);
 
 	private static Timestamp now = new Timestamp(System.currentTimeMillis());
 
@@ -103,7 +98,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 		// 查看
 		Long id = param.getId();
 		if(id==null) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		QueryWrapper<GoodsPublicPrice> queryWrapper = new QueryWrapper<GoodsPublicPrice>();
@@ -145,7 +140,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 			returnPage.setData(goodsPublicPriceDto);
 			return returnPage;
 		} else {
-			logger.error("参数异常，");
+			log.error("参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
 		}
 	}
@@ -164,7 +159,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 		JsonResult<Object> returnPage = new JsonResult<Object>();
 		Long id = param.getId();
 		if(TextUtils.isEmpty(String.valueOf(id))) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		QueryWrapper<GoodsPublicPrice> queryWrapper = new QueryWrapper<GoodsPublicPrice>();
@@ -172,7 +167,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 		GoodsPublicPrice goodsPublicPrice = baseService.getById(id);
 		// 审核状态不为0，则报异常
 		if (!(goodsPublicPrice.getReviewStatus()).equals(DBDictionaryEnumManager.review_0.getkey())) {
-			logger.error("不是待审核状态，不允许修改！");
+			log.error("不是待审核状态，不允许修改！");
 			returnPage.error("不是待审核状态，不允许修改！");
 			return returnPage;
 		}
@@ -212,7 +207,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 			returnPage.setData(goodsPublicPriceDto);
 			return returnPage;
 		} else {
-			logger.error("参数异常，");
+			log.error("参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
 		}
 	}
@@ -231,7 +226,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 		String updateSign = param.getUpdateSign();
 		JsonResult<Object> returnPage = new JsonResult<Object>();
 		if (TextUtils.isEmpty(updateSign)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		switch (updateSign) {
@@ -240,7 +235,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 			String priceStatus = param.getPriceStatus();
 			String goodsType = param.getGoodsType();
 			if (TextUtils.isEmptys(priceStatus, goodsType)) {
-				logger.error("请求参数为空，");
+				log.error("请求参数为空，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 			}
 			GoodsPublicPrice goodsPublicPrice = new GoodsPublicPrice();
@@ -282,18 +277,18 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 			String priceStatus = param.getPriceStatus();
 			String goodsType = param.getGoodsType();
 			if (TextUtils.isEmptys(id, priceStatus, goodsType)) {
-				logger.error("请求参数为空，");
+				log.error("请求参数为空，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 			}
 			GoodsPublicPrice goodsPublicPriceCheck = baseService.getById(id);
 			if (goodsPublicPriceCheck == null) {
-				logger.error("请求参数异常，");
+				log.error("请求参数异常，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
 			}
 			String reviewStatus = goodsPublicPriceCheck.getReviewStatus();
 			if (!(reviewStatus.equals(DBDictionaryEnumManager.review_0.getkey())
 					|| reviewStatus.equals(DBDictionaryEnumManager.review_2.getkey()))) {
-				logger.error("审核状态不为待审核或审核不通过，不允许修改！");
+				log.error("审核状态不为待审核或审核不通过，不允许修改！");
 				returnPage.error("审核状态不为待审核或审核不通过，不允许修改！");
 				return returnPage;
 			}
@@ -335,7 +330,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 			return returnPage;
 		}
 		default: {
-			logger.error("参数异常，");
+			log.error("参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
 		}
 		}
@@ -355,12 +350,12 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 		JsonResult<Object> returnPage = new JsonResult<Object>();
 		String id = String.valueOf(param.getId());
 		if (TextUtils.isEmpty(id)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsPublicPrice goodsPublicPriceCheck = baseService.getById(id);
 		if (goodsPublicPriceCheck == null) {
-			logger.error("参数异常，");
+			log.error("参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
 		}
 		String reviewStatus = goodsPublicPriceCheck.getReviewStatus();
@@ -396,17 +391,17 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 		String auditorStatus = param.getReviewStatus();
 		String auditorBz = param.getReviewRemarks();
 		if (TextUtils.isEmptys(id, auditorStatus, auditorBz)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		GoodsPublicPrice goodsPublicPriceCheck = baseService.getById(id);
 		if (goodsPublicPriceCheck == null) {
-			logger.error("参数异常，");
+			log.error("参数异常，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
 		}
 		if (!(goodsPublicPriceCheck.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey()))) {
-			logger.error("不为待审核状态，不允许审核！");
+			log.error("不为待审核状态，不允许审核！");
 			returnPage.error("不为待审核状态，不允许审核！");
 			return returnPage;
 		}
@@ -455,7 +450,7 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 							new BigDecimal(var2.getTicketAmount()).multiply(new BigDecimal("0.0001")).longValue());
 					goodsPackageService.updateById(bossGoodsPackage);
 				} else {
-					logger.error("参数异常，");
+					log.error("参数异常，");
 					throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数异常", new Exception());
 				}
 			}

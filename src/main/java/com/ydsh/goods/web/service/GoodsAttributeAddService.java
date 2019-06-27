@@ -8,10 +8,10 @@ package com.ydsh.goods.web.service;
 
 import java.util.Map;
 
-
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ydsh.goods.web.entity.GoodsAttributeAdd;
+import com.ydsh.goods.web.entity.dto.GoodsAttributeAddAndManager;
 /**   
  * <p>自定义service写在这里</p>
  * 
@@ -31,5 +31,5 @@ public interface GoodsAttributeAddService extends IService<GoodsAttributeAdd> {
 	* @param @return
 	* @return
 	 */
-	IPage<Map<String, Object>>  selectAttributeAddWithManager(IPage<Map<String, Object>> page, Map<String,Object> queryWrapper);
+	IPage<GoodsAttributeAddAndManager>  selectAttributeAddWithManager(IPage<Map<String, Object>> page, Map<String,Object> queryWrapper);
 }

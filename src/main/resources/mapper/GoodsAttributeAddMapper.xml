@@ -3,17 +3,18 @@
 <mapper namespace="com.ydsh.goods.web.dao.GoodsAttributeAddDao">
 
 	<select id="selectAttributeAddWithManager" parameterType="java.util.Map"
-		resultType="java.util.Map">
+		resultType="com.ydsh.goods.web.entity.dto.GoodsAttributeAddAndManager">
 		SELECT
 		   gam.id AS gamId,
 		   gam.attribute_name AS attributeName,
 		   gam.`gc_id` AS gcId,
-		   gam.`create_time` AS gamcreateTime,
+		   gam.`create_time` AS gamCreatetime,
 		   gam.`status` AS gamStatus,
 		   gaa.`id` AS gaaId,
 		   gaa.`attribute_value` AS attributeValue,
 		   gaa.`attribute_order` AS attributeOrder,
-		   gaa.`create_time` AS gaacreateTime
+		   gaa.`create_time` AS gaaCreatetime,
+		   gaa.status AS gaaStatus
 		FROM
 		   goods_attribute_manager gam,
 		   goods_attribute_add gaa

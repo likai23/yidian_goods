@@ -12,8 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,7 +69,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GoodsCardController extends AbstractController<GoodsCardService, GoodsCard> {
 
-	private static Logger logger = LoggerFactory.getLogger(GoodsCardController.class);
 
 	@Autowired
 	private GoodsCardService goodsCardService;
@@ -95,7 +92,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 			@RequestBody PageParam<GoodsCardAndSkuDto> pageParam) {
 		JsonResult<IPage<GoodsCardAndSkuDto>> returnPage = new JsonResult<IPage<GoodsCardAndSkuDto>>();
 		if (pageParam.getPageSize() > 500) {
-			logger.error("分页最大限制500，" + pageParam);
+			log.error("分页最大限制500，" + pageParam);
 			returnPage.error("分页最大限制500");
 			return returnPage;
 		}
@@ -134,13 +131,13 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		String goodCategoryId = param.getGoodCategoryId();
 		String goodStatus = param.getGoodStatus();
 		if (TextUtils.isEmptys(goodName, goodAttribute, goodType, goodProperty, goodShape, goodCategoryId)) {
-			logger.error("请求参数为空，" + param);
+			log.error("请求参数为空，" + param);
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsCard bossGoodsCard = new GoodsCard();
 		GoodsCategory bossGoodsCategory = goodsCategoryService.getById(goodCategoryId);
 		if (bossGoodsCategory == null) {
-			logger.error("类目编码不存在，" + param);
+			log.error("类目编码不存在，" + param);
 			result.error("类目编码不存在！");
 			return result;
 		}
@@ -148,7 +145,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		queryWrapper.eq("goodName", goodName);
 		Map<String, Object> checkName = baseService.getMap(queryWrapper);
 		if (checkName != null) {
-			logger.error("商品名称不允许重复，" + param);
+			log.error("商品名称不允许重复，" + param);
 			result.error("商品名称不允许重复！");
 			return result;
 		}
@@ -223,7 +220,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		// 修改进入值为lookSignWithStatus，查看进入值为lookSign
 		String getSign = param.getGetSign();
 		if (TextUtils.isEmptys(bgcId, bgcsId, getSign)) {
-			logger.error("请求参数为空，" + param);
+			log.error("请求参数为空，" + param);
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		// 查看
@@ -234,7 +231,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 			LookAndUpdateTakeInGoodsCard lookAndUpdateTakeInGoodsCard = new LookAndUpdateTakeInGoodsCard();
 			BeanUtils.copyProperties(bossGoodsCard, lookAndUpdateTakeInGoodsCard);
 			if (bossGoodsCard == null) {
-				logger.error("商品不存在！");
+				log.error("商品不存在！");
 				result.error("商品不存在！");
 				return result;
 			}
@@ -274,7 +271,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 			GoodsCard bossGoodsCard = baseService.getOne(queryWrapper);
 			LookAndUpdateTakeInGoodsCard lookAndUpdateTakeInGoodsCard = new LookAndUpdateTakeInGoodsCard();
 			if (bossGoodsCard == null) {
-				logger.error("商品不存在！");
+				log.error("商品不存在！");
 				result.error("商品不存在！");
 				return result;
 			}
@@ -336,7 +333,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		String goodStatus = param.getGoodStatus();
 //			String bgemId = TextUtils.getMapForKeyToString(param, "bgemId");
 		if (TextUtils.isEmptys(id)) {
-			logger.error("请求参数为空，" + param);
+			log.error("请求参数为空，" + param);
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsCard bossGoodsCard = new GoodsCard();
@@ -400,12 +397,12 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		String id = String.valueOf(param.getGcId());
 		String status = String.valueOf(param.getGoodStatus());
 		if (TextUtils.isEmptys(id, status)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsCard goodsCardCheck = goodsCardService.getById(id);
 		if (goodsCardCheck == null) {
-			logger.error("商品不存在！");
+			log.error("商品不存在！");
 			result.error("商品不存在！");
 			return result;
 		}
@@ -476,12 +473,12 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		String reviewStatus = param.getReviewStatus();
 		String reviewRemarks = param.getReviewRemarks();
 		if (TextUtils.isEmptys(id, reviewStatus, reviewRemarks)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsCard goodsCardCheck = goodsCardService.getById(id);
 		if (goodsCardCheck == null) {
-			logger.error("商品不存在！");
+			log.error("商品不存在！");
 			result.error("商品不存在！");
 			return result;
 		}
@@ -493,7 +490,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 			goodsCardService.updateById(goodsCard);
 			result.success("审核成功");
 		} else {
-			logger.error("不为禁用状态，不可启用！");
+			log.error("不为禁用状态，不可启用！");
 			result.error("不为禁用状态，不可启用！");
 			return result;
 		}

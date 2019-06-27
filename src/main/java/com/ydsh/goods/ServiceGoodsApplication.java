@@ -3,6 +3,7 @@ package com.ydsh.goods;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 import com.ctrip.framework.apollo.Config;
@@ -10,7 +11,7 @@ import com.ctrip.framework.apollo.ConfigService;
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
  
 @SpringBootApplication(exclude = {FreeMarkerAutoConfiguration.class})
-@EnableEurekaClient
+@EnableDiscoveryClient
 @EnableApolloConfig
 public class ServiceGoodsApplication {
 

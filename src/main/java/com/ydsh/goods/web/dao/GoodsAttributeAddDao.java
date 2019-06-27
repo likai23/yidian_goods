@@ -14,6 +14,7 @@ import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ydsh.goods.web.entity.GoodsAttributeAdd;
+import com.ydsh.goods.web.entity.dto.GoodsAttributeAddAndManager;
 
 /**
  * <p>
@@ -31,5 +32,5 @@ import com.ydsh.goods.web.entity.GoodsAttributeAdd;
 @Mapper
 public interface GoodsAttributeAddDao extends BaseMapper<GoodsAttributeAdd> {
  
-	IPage<Map<String, Object>> selectAttributeAddWithManager(IPage<Map<String, Object>> page,@Param("queryWrapper")Map<String,Object>  queryWrapper);
+	IPage<GoodsAttributeAddAndManager> selectAttributeAddWithManager(IPage<Map<String, Object>> page,@Param("queryWrapper")Map<String,Object>  queryWrapper);
 }

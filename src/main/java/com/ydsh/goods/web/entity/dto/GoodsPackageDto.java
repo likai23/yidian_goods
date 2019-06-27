@@ -6,21 +6,24 @@
  */
 package com.ydsh.goods.web.entity.dto;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ydsh.goods.web.entity.GoodsPackageInfo;
+import com.ydsh.goods.web.entity.GoodsPackagePlatform;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import java.io.Serializable;
 
 /**
  * <p>
@@ -80,9 +83,9 @@ public class GoodsPackageDto implements Serializable {
 	@JSONField(serialize = false)
 	@TableField(exist = false)
 	@ApiModelProperty(name = "skuPackageList", value = "sku的list列表包含skuId='sku id'，account='sku数量'")
-	private List<Map<String, Object>> skuPackageList;
+	private List<GoodsPackageInfo> skuPackageList;
 	@JSONField(serialize = false)
 	@TableField(exist = false)
 	@ApiModelProperty(name = "PackageList", value = "sku的list列表包含{pmId='平台id'，coverPhoto='套餐封面图'，mainPhoto='套餐主图' }    ")
-	private List<Map<String, Object>> PackageList;
+	private List<GoodsPackagePlatform> PackageList;
 }

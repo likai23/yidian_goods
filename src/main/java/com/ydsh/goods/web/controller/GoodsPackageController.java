@@ -10,8 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,8 +67,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GoodsPackageController extends AbstractController<GoodsPackageService, GoodsPackage> {
 
-	private static Logger logger = LoggerFactory.getLogger(GoodsCardController.class);
-
 	@Autowired
 	private GoodsPackageService goodsPackageService;
 	@Autowired
@@ -91,7 +88,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		JsonResult<IPage<Map<String, Object>>> returnPage = new JsonResult<IPage<Map<String, Object>>>();
 		Page<GoodsPackage> page = new Page<GoodsPackage>(pageParam.getPageNum(), pageParam.getPageSize());
 		if (pageParam.getPageSize() > 500) {
-			logger.error("分页最大限制500，" + pageParam);
+			log.error("分页最大限制500，" + pageParam);
 			returnPage.error("分页最大限制500");
 			return returnPage;
 		}
@@ -125,7 +122,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		JsonResult<Object> returnPage = new JsonResult<Object>();
 		Page<Map<String, Object>> page = new Page<Map<String, Object>>(pageParam.getPageNum(), pageParam.getPageSize());
 		if (pageParam.getPageSize() > 500) {
-			logger.error("分页最大限制500，" + pageParam);
+			log.error("分页最大限制500，" + pageParam);
 			returnPage.error("分页最大限制500");
 			return returnPage;
 		}
@@ -163,14 +160,14 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String denomination = String.valueOf(param.getDenomination());
 		String packageStatus = param.getPackageStatus();
 		if (TextUtils.isEmptys(packageName, denomination)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		QueryWrapper<GoodsPackage> queryWrapper = new QueryWrapper<GoodsPackage>();
 		queryWrapper.eq("package_name", packageName);
 		Map<String, Object> var = goodsPackageService.getMap(queryWrapper);
 		if (!(var == null || var.isEmpty())) {
-			logger.error("套餐名称不能重复，");
+			log.error("套餐名称不能重复，");
 			result.error("套餐名称不能重复！");
 			return result;
 		}
@@ -184,26 +181,19 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		// 保存套餐信息
 		goodsPackageService.save(bossGoodsPackage);
 		// 套餐下的sku
-		List<Map<String, Object>> skuPackageList = param.getSkuPackageList();
+		List<GoodsPackageInfo> skuPackageList = param.getSkuPackageList();
 		if (!(skuPackageList == null || skuPackageList.isEmpty())) {
-			for (Map<String, Object> var1 : skuPackageList) {
-				GoodsPackageInfo bossGoodsPackageInfo = new GoodsPackageInfo();
-				bossGoodsPackageInfo.setGpId(bossGoodsPackage.getId());
-				bossGoodsPackageInfo.setGcsId(Long.parseLong(String.valueOf(var1.get("skuId"))));
-				bossGoodsPackageInfo.setAccount(Integer.parseInt(String.valueOf(var1.get("account"))));
-				goodsPackageInfoService.save(bossGoodsPackageInfo);
+			for (GoodsPackageInfo var1 : skuPackageList) {
+				var1.setGpId(bossGoodsPackage.getId());
+				goodsPackageInfoService.save(var1);
 			}
 		}
 		// 套餐下的平台详情
-		List<Map<String, Object>> platFromList = param.getPackageList();
+		List<GoodsPackagePlatform> platFromList = param.getPackageList();
 		if (!(platFromList == null || platFromList.isEmpty())) {
-			for (Map<String, Object> var2 : platFromList) {
-				GoodsPackagePlatform bossGoodsPackagePlatform = new GoodsPackagePlatform();
-				bossGoodsPackagePlatform.setGpId(bossGoodsPackage.getId());
-				bossGoodsPackagePlatform.setPmId(Long.parseLong(String.valueOf(var2.get("pmId"))));
-				bossGoodsPackagePlatform.setSkuCoverPhoto(String.valueOf(var2.get("coverPhoto")));
-				bossGoodsPackagePlatform.setSkuMainPhoto(String.valueOf(var2.get("mainPhoto")));
-				goodsPackagePlatformService.save(bossGoodsPackagePlatform);
+			for (GoodsPackagePlatform var2 : platFromList) {
+				var2.setGpId(bossGoodsPackage.getId());
+				goodsPackagePlatformService.save(var2);
 			}
 		}
 		result.success("添加成功");
@@ -233,14 +223,14 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String denomination = String.valueOf(param.getDenomination());
 		String packageStatus = param.getPackageStatus();
 		if (TextUtils.isEmptys(id, gpNo, packageName, denomination)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		QueryWrapper<GoodsPackage> queryWrapperCheck = new QueryWrapper<GoodsPackage>();
 		queryWrapperCheck.eq("package_name", packageName);
 		Map<String, Object> var = goodsPackageService.getMap(queryWrapperCheck);
 		if (!(var == null || var.isEmpty())) {
-			logger.error("套餐名称不能重复，");
+			log.error("套餐名称不能重复，");
 			result.error("套餐名称不能重复！");
 			return result;
 		}
@@ -262,14 +252,11 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 			}
 		}
 		// 套餐下的sku
-		List<Map<String, Object>> skuPackageList = param.getSkuPackageList();
+		List<GoodsPackageInfo> skuPackageList = param.getSkuPackageList();
 		if (!(skuPackageList == null || skuPackageList.isEmpty())) {
-			for (Map<String, Object> var2 : skuPackageList) {
-				GoodsPackageInfo bossGoodsPackageInfo = new GoodsPackageInfo();
-				bossGoodsPackageInfo.setGpId(bossGoodsPackage.getId());
-				bossGoodsPackageInfo.setGcsId(Long.parseLong(String.valueOf(var2.get("skuId"))));
-				bossGoodsPackageInfo.setAccount(Integer.parseInt(String.valueOf(var2.get("account"))));
-				goodsPackageInfoService.save(bossGoodsPackageInfo);
+			for (GoodsPackageInfo var2 : skuPackageList) {
+				var2.setGpId(bossGoodsPackage.getId());
+				goodsPackageInfoService.save(var2);
 			}
 		}
 		QueryWrapper<GoodsPackagePlatform> queryWrapperSecond = new QueryWrapper<GoodsPackagePlatform>();
@@ -282,15 +269,11 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 			}
 		}
 		// 套餐下的平台详情
-		List<Map<String, Object>> platFromList = param.getPackageList();
+		List<GoodsPackagePlatform> platFromList = param.getPackageList();
 		if (!(platFromList == null || platFromList.isEmpty())) {
-			for (Map<String, Object> var2 : platFromList) {
-				GoodsPackagePlatform bossGoodsPackagePlatform = new GoodsPackagePlatform();
-				bossGoodsPackagePlatform.setGpId(bossGoodsPackage.getId());
-				bossGoodsPackagePlatform.setPmId(Long.parseLong(String.valueOf(var2.get("pmId"))));
-				bossGoodsPackagePlatform.setSkuCoverPhoto(String.valueOf(var2.get("coverPhoto")));
-				bossGoodsPackagePlatform.setSkuMainPhoto(String.valueOf(var2.get("mainPhoto")));
-				goodsPackagePlatformService.save(bossGoodsPackagePlatform);
+			for (GoodsPackagePlatform var2 : platFromList) {
+				var2.setGpId(bossGoodsPackage.getId());
+				goodsPackagePlatformService.save(var2);
 			}
 		}
 		result.success("修改成功");
@@ -314,7 +297,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String id = String.valueOf(param.getId());
 		String packageStatus = param.getPackageStatus();
 		if (TextUtils.isEmptys(id, packageStatus)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsPackage goodsPackageCheck = baseService.getById(id);
@@ -328,7 +311,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 				result.success("修改成功");
 				return result;
 			} else {
-				logger.error("状态不为下架，不可更改为上架！");
+				log.error("状态不为下架，不可更改为上架！");
 				result.error("状态不为下架，不可更改为上架！");
 				return result;
 			}
@@ -343,7 +326,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 				result.success("修改成功");
 				return result;
 			} else {
-				logger.error("状态不为上架，不可更改为上架！");
+				log.error("状态不为上架，不可更改为上架！");
 				result.error("状态不为上架，不可更改为上架！");
 				return result;
 			}
@@ -351,7 +334,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		// 作废
 		else if (packageStatus.equals(DBDictionaryEnumManager.goods_2.getkey())) {
 			if (goodsPackageCheck.getPackageStatus().equals(DBDictionaryEnumManager.goods_2.getkey())) {
-				logger.error("已作废，不可重复操作！");
+				log.error("已作废，不可重复操作！");
 				result.error("已作废，不可重复操作！");
 				return result;
 			} else {
@@ -364,7 +347,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 				return result;
 			}
 		} else {
-			logger.error("请求参数异常，");
+			log.error("请求参数异常，");
 			result.error("请求参数异常！");
 			return result;
 		}
@@ -389,16 +372,16 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String reviewStatus = param.getReviewStatus();
 		String reviewRemarks = param.getReviewRemarks();
 		if (TextUtils.isEmptys(id, reviewStatus, reviewRemarks)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		GoodsPackage goodsPackageCheck = baseService.getById(id);
 		if (goodsPackageCheck == null) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		if (!(goodsPackageCheck.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey()))) {
-			logger.error("不为待审核状态，不允许审核");
+			log.error("不为待审核状态，不允许审核");
 			result.error("不为待审核状态，不允许审核");
 			return result;
 		} else {
@@ -423,59 +406,63 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 	 */
 	@RequestMapping(value = "/lookPackageGoods", method = RequestMethod.POST)
 	@ApiOperation(value = "查看套餐商品", notes = "作者：戴艺辉")
-	public JsonResult<Object> lookPackageGoods(@RequestBody LookAndUpdateInGoodsPackageDto param) {
-		JsonResult<Object> result = new JsonResult<Object>();
+	public JsonResult<GoodsPackageDto> lookPackageGoods(@RequestBody LookAndUpdateInGoodsPackageDto param) {
+		JsonResult<GoodsPackageDto> result = new JsonResult<GoodsPackageDto>();
 		// 套餐id
 		String id = String.valueOf(param.getId());
 		// 修改进入 还是 查看进入: 修改进入值为1，查看进入值为
 		String lookSign = param.getLookSign();
 		if (TextUtils.isEmptys(id, lookSign)) {
-			logger.error("请求参数为空，");
+			log.error("请求参数为空，");
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
 		}
 		// 查看套餐商品
 		if (lookSign.equals("lookPackageGoods")) {
 			QueryWrapper<GoodsPackage> queryWrapper = new QueryWrapper<GoodsPackage>();
 			queryWrapper.eq("id", id);
-			Map<String, Object> goodsPackage = baseService.getMap(queryWrapper);
+			GoodsPackage goodsPackage = baseService.getById(id);
 			if (goodsPackage == null) {
-				logger.error("请求参数异常，");
+				log.error("请求参数异常，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
 			}
+			GoodsPackageDto goodsPackageDto = new GoodsPackageDto();
+			BeanUtils.copyProperties(goodsPackage, goodsPackageDto);
 			QueryWrapper<GoodsPackageInfo> queryWrapper1 = new QueryWrapper<GoodsPackageInfo>();
 			queryWrapper1.eq("gp_id", id);
-			List<Map<String, Object>> packageInfoList = goodsPackageInfoService.listMaps(queryWrapper1);
+			List<GoodsPackageInfo> packageInfoList = goodsPackageInfoService.list(queryWrapper1);
 			QueryWrapper<GoodsPackagePlatform> queryWrapper2 = new QueryWrapper<GoodsPackagePlatform>();
 			queryWrapper.eq("gp_id", id);
-			List<Map<String, Object>> packagePlatformList = goodsPackagePlatformService.listMaps(queryWrapper2);
-			goodsPackage.put("packageInfoList", packageInfoList);
-			goodsPackage.put("packagePlatformList", packagePlatformList);
+			List<GoodsPackagePlatform> packagePlatformList = goodsPackagePlatformService.list(queryWrapper2);
+			goodsPackageDto.setSkuPackageList(packageInfoList);
+			goodsPackageDto.setPackageList(packagePlatformList);
 			result.success("查询成功");
-			result.setData(goodsPackage);
+			result.setData(goodsPackageDto);
 		}
 		// 修改进入查看商品
 		if (lookSign.equals("lookPackageGoodsWtihStatus")) {
 			QueryWrapper<GoodsPackage> queryWrapper = new QueryWrapper<GoodsPackage>();
 			queryWrapper.eq("id", id);
-			Map<String, Object> goodsPackage = baseService.getMap(queryWrapper);
+			GoodsPackage goodsPackage = baseService.getById(id);
 			if (goodsPackage == null) {
-				logger.error("请求参数异常，");
+				log.error("请求参数异常，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
 			}
-			if (goodsPackage.get("review_status").equals(DBDictionaryEnumManager.review_0.getkey())
-					|| goodsPackage.get("review_status").equals(DBDictionaryEnumManager.review_2.getkey())) {
+			if (goodsPackage.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey())
+					|| goodsPackage.getReviewStatus().equals(DBDictionaryEnumManager.review_2.getkey())) {
+				GoodsPackageDto goodsPackageDto = new GoodsPackageDto();
+				BeanUtils.copyProperties(goodsPackage, goodsPackageDto);
 				QueryWrapper<GoodsPackageInfo> queryWrapper1 = new QueryWrapper<GoodsPackageInfo>();
 				queryWrapper1.eq("gp_id", id);
-				List<Map<String, Object>> packageInfoList = goodsPackageInfoService.listMaps(queryWrapper1);
+				List<GoodsPackageInfo> packageInfoList = goodsPackageInfoService.list(queryWrapper1);
 				QueryWrapper<GoodsPackagePlatform> queryWrapper2 = new QueryWrapper<GoodsPackagePlatform>();
 				queryWrapper.eq("gp_id", id);
-				List<Map<String, Object>> packagePlatformList = goodsPackagePlatformService.listMaps(queryWrapper2);
-				goodsPackage.put("packageInfoList", packageInfoList);
-				goodsPackage.put("packagePlatformList", packagePlatformList);
+				List<GoodsPackagePlatform> packagePlatformList = goodsPackagePlatformService.list(queryWrapper2);
+				goodsPackageDto.setSkuPackageList(packageInfoList);
+				goodsPackageDto.setPackageList(packagePlatformList);
 				result.success("查询成功");
-				result.setData(goodsPackage);
+				result.setData(goodsPackageDto);
 			} else {
-				logger.error("不为待审核或审核不通过状态，不可修改，");
+				log.error("不为待审核或审核不通过状态，不可修改，");
 				result.error("不为待审核或审核不通过状态，不可修改！");
 				return result;
 			}

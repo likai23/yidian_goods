@@ -9,8 +9,6 @@ package com.ydsh.goods.web.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +25,7 @@ import com.ydsh.goods.common.exception.SystemException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsAttributeAdd;
+import com.ydsh.goods.web.entity.dto.GoodsAttributeAddAndManager;
 import com.ydsh.goods.web.entity.dto.GoodsAttributeAddDto;
 import com.ydsh.goods.web.entity.dto.updateGoodsAttributeManagerStatus;
 import com.ydsh.goods.web.service.GoodsAttributeAddService;
@@ -54,7 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GoodsAttributeAddController extends AbstractController<GoodsAttributeAddService, GoodsAttributeAdd> {
 
-	private static Logger logger = LoggerFactory.getLogger(GoodsAttributeAddController.class);
 
 	@Autowired
 	private GoodsAttributeAddService goodsAttributeAddService;
@@ -68,17 +66,17 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 	 */
 	@RequestMapping(value = "/getAttributePages", method = RequestMethod.GET)
 	@ApiOperation(value = "分页查询销售属性主表和副表", notes = "分页查询返回[IPage<T>],作者：")
-	public JsonResult<IPage<Map<String, Object>>> getAttributeAddWtithManagerPages(
+	public JsonResult<IPage<GoodsAttributeAddAndManager>> getAttributeAddWtithManagerPages(
 			PageParam<GoodsAttributeAddDto> pageParam) {
 		if (pageParam.getPageSize() > 500) {
-			logger.error("分页最大限制500，" + pageParam);
+			log.error("分页最大限制500，" + pageParam);
 			result.error("分页最大限制500");
 		}
 		Page<Map<String, Object>> page = new Page<Map<String, Object>>(pageParam.getPageNum(), pageParam.getPageSize());
-		JsonResult<IPage<Map<String, Object>>> returnPage = new JsonResult<IPage<Map<String, Object>>>();
+		JsonResult<IPage<GoodsAttributeAddAndManager>> returnPage = new JsonResult<IPage<GoodsAttributeAddAndManager>>();
 		Map<String, Object> queryWrapper = new HashMap<String, Object>();
 		// 分页数据
-		IPage<Map<String, Object>> pageData = goodsAttributeAddService.selectAttributeAddWithManager(page,
+		IPage<GoodsAttributeAddAndManager> pageData = goodsAttributeAddService.selectAttributeAddWithManager(page,
 				queryWrapper);
 		result.success("添加成功");
 		returnPage.success(pageData);
@@ -101,7 +99,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 		JsonResult<Object> result = new JsonResult<Object>();
 		if (param.getGamId() == null || param.getAttributeValue() == null || param.getAttributeOrder() == null
 				|| param.getStatus() == null) {
-			logger.error("请求参数为空，" + param);
+			log.error("请求参数为空，" + param);
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
 		}
 		baseService.save(param);
@@ -126,7 +124,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 		String attributeOrder = String.valueOf(param.getAttributeOrder());
 		String status = String.valueOf(param.getStatus());
 		if (TextUtils.isEmptys(id, attributeValue, attributeOrder, status)) {
-			logger.error("请求参数为空，" + param);
+			log.error("请求参数为空，" + param);
 			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
 		}
 		GoodsAttributeAdd goodsAttributeAdd = new GoodsAttributeAdd();
@@ -155,12 +153,12 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 			String id = String.valueOf(param.getId());
 			String status = String.valueOf(param.getStatus());
 			if (TextUtils.isEmptys(id, status)) {
-				logger.error("请求参数为空，" + param);
+				log.error("请求参数为空，" + param);
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
 			}
 			GoodsAttributeAdd goodsAttributeAddCheck = baseService.getById(id);
 			if (goodsAttributeAddCheck == null) {
-				logger.error("请求参数异常，");
+				log.error("请求参数异常，");
 				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
 			}
 			// 启用
@@ -173,7 +171,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 					baseService.updateById(goodsAttributeAdd);
 					result.success("修改成功！");
 				} else {
-					logger.error("不是禁用状态，不可修改为启用！");
+					log.error("不是禁用状态，不可修改为启用！");
 					result.error("不是禁用状态，不可修改为启用！");
 					return result;
 				}
@@ -188,7 +186,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 					baseService.updateById(goodsAttributeAdd);
 					result.success("修改成功！");
 				} else {
-					logger.error("不是启用状态，不可修改为禁用！");
+					log.error("不是启用状态，不可修改为禁用！");
 					result.error("不是启用状态，不可修改为禁用！");
 					return result;
 				}

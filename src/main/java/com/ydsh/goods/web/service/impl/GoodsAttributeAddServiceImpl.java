@@ -6,17 +6,16 @@
  */
 package com.ydsh.goods.web.service.impl;
 
-import com.ydsh.goods.web.entity.GoodsAttributeAdd;
-import com.ydsh.goods.web.dao.GoodsAttributeAddDao;
-import com.ydsh.goods.web.service.GoodsAttributeAddService;
-
-
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ydsh.goods.web.dao.GoodsAttributeAddDao;
+import com.ydsh.goods.web.entity.GoodsAttributeAdd;
+import com.ydsh.goods.web.entity.dto.GoodsAttributeAddAndManager;
+import com.ydsh.goods.web.service.GoodsAttributeAddService;
 
 /**   
  * <p>自定义serviceImpl写在这里</p>
@@ -37,7 +36,7 @@ public class GoodsAttributeAddServiceImpl  extends ServiceImpl<GoodsAttributeAdd
 	* @param @return
 	* @return
 	 */
-	 public IPage<Map<String, Object>> selectAttributeAddWithManager(IPage<Map<String, Object>> page, Map<String,Object> queryWrapper){
+	 public IPage<GoodsAttributeAddAndManager> selectAttributeAddWithManager(IPage<Map<String, Object>> page, Map<String,Object> queryWrapper){
 		 return baseMapper.selectAttributeAddWithManager(page, queryWrapper);
 	 }
 }

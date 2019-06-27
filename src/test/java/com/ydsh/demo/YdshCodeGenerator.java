@@ -20,7 +20,7 @@ import java.util.Map;
  **/
 public class YdshCodeGenerator {
     // 基础信息：项目名、作者、版本
-    public static final String PROJECT = "ydsh-saas-service-basis";
+    public static final String PROJECT = "ydsh-saas-service-goods";
     public static final String AUTHOR = "戴艺辉";
     public static final String VERSION = "V1.0";
     // 数据库连接信息：连接URL、用户名、秘密、数据库名

@@ -14,6 +14,7 @@ import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ydsh.goods.web.entity.GoodsCategory;
+import com.ydsh.goods.web.entity.dto.GoodsCategoryDto;
 
 /**   
  * <p>自定义mapper写在这里</p>
@@ -36,5 +37,5 @@ public interface GoodsCategoryDao extends BaseMapper<GoodsCategory> {
     * @param @return
     * @return
      */
-    IPage<Map<String, Object>> getGoodsCategoryPages(IPage<Map<String, Object>> page, @Param("queryWrapper") Map<String, Object> queryWrapper);
+    IPage<GoodsCategoryDto> getGoodsCategoryPages(IPage<Map<String, Object>> page, @Param("queryWrapper") Map<String, Object> queryWrapper);
 }
