@@ -1,5 +1,6 @@
 package com.ydsh.goods.common.enums;
 
+
 /**
  * 数据字典
  *
@@ -111,6 +112,21 @@ public enum DBDictionaryEnumManager {
 	settlement_method_1("1","核销结算"),
 	settlement_method_2("2","发放结算"),
 	settlement_method_3("3","订单结算"),
+	
+	/**
+	 * 延期类型
+	 */
+	delay_type_1("1","原有效结束时间延期"),
+	delay_type_2("2","原虚拟结束时间延期"),
+	
+	/**
+	 * 劵码操作审核
+	 */
+	coupon_code_review_1("1","作废"),
+	coupon_code_review_2("2","延期"),
+	coupon_code_review_3("3","冻结"),
+	coupon_code_review_4("4","加密导出"),
+	
 	
 	;
 
