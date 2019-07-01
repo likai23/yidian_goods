@@ -17,13 +17,13 @@ public enum DBDictionaryEnumManager {
 	 * 5-出库状态
 	 * 6-付款单状态
 	 */
-	review_0("0", "待审核"),
-	review_1("1", "审核通过"),
-	review_2("2", "审核不通过"),
-	review_3("3", "待提交"),
-	review_4("4", "已入库"),
-	review_5("5", "已审核"),
-	review_6("6", "已付款"),
+	review_0("r0", "待审核"),
+	review_1("r1", "审核通过"),
+	review_2("r2", "审核不通过"),
+	review_3("r3", "待提交"),
+	review_4("r4", "已入库"),
+	review_5("r5", "已审核"),
+	review_6("r6", "已付款"),
 	/**
 	 * 1-是 
 	 * 2-否
@@ -172,7 +172,7 @@ public enum DBDictionaryEnumManager {
 		return enumList.getMessage();
 	}
 
-	/**
+	/** 
 	 * 通过枚举<key>key</key>获得枚举
 	 * values() 方法将枚举转变为数组
 	 *
