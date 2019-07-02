@@ -21,7 +21,7 @@ import com.ydsh.generator.common.JsonResult;
 import com.ydsh.generator.common.PageParam;
 import com.ydsh.goods.common.enums.DBDictionaryEnumManager;
 import com.ydsh.goods.common.enums.ErrorCode;
-import com.ydsh.goods.common.exception.SystemException;
+import com.ydsh.goods.common.exception.BizException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsAttributeAdd;
@@ -100,7 +100,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 		if (param.getGamId() == null || param.getAttributeValue() == null || param.getAttributeOrder() == null
 				|| param.getStatus() == null) {
 			log.error("请求参数为空，" + param);
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空");
 		}
 		baseService.save(param);
 		result.success("保存成功");
@@ -125,7 +125,7 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 		String status = String.valueOf(param.getStatus());
 		if (TextUtils.isEmptys(id, attributeValue, attributeOrder, status)) {
 			log.error("请求参数为空，" + param);
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空");
 		}
 		GoodsAttributeAdd goodsAttributeAdd = new GoodsAttributeAdd();
 		goodsAttributeAdd.setId(Long.parseLong(id));
@@ -154,12 +154,12 @@ public class GoodsAttributeAddController extends AbstractController<GoodsAttribu
 			String status = String.valueOf(param.getStatus());
 			if (TextUtils.isEmptys(id, status)) {
 				log.error("请求参数为空，" + param);
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空", new Exception());
+				throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数为空");
 			}
 			GoodsAttributeAdd goodsAttributeAddCheck = baseService.getById(id);
 			if (goodsAttributeAddCheck == null) {
 				log.error("请求参数异常，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
+				throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常");
 			}
 			// 启用
 			if (status.equals(DBDictionaryEnumManager.user_status_0.getkey())) {

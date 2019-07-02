@@ -1,5 +1,5 @@
 /**
- * @filename:GoodsCardController 2019-06-12 10:08:37
+* @filename:GoodsCardController 2019-06-12 10:08:37
  * @project ydsh-saas-service-demo  V1.0
  * Copyright(c) 2020 戴艺辉 Co. Ltd. 
  * All right reserved. 
@@ -28,7 +28,7 @@ import com.ydsh.goods.common.db.DBKeyGenerator;
 import com.ydsh.goods.common.enums.DBBusinessKeyTypeEnums;
 import com.ydsh.goods.common.enums.DBDictionaryEnumManager;
 import com.ydsh.goods.common.enums.ErrorCode;
-import com.ydsh.goods.common.exception.SystemException;
+import com.ydsh.goods.common.exception.BizException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsCard;
@@ -132,7 +132,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		String goodStatus = param.getGoodStatus();
 		if (TextUtils.isEmptys(goodName, goodAttribute, goodType, goodProperty, goodShape, goodCategoryId)) {
 			log.error("请求参数为空，" + param);
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsCard bossGoodsCard = new GoodsCard();
 		GoodsCategory bossGoodsCategory = goodsCategoryService.getById(goodCategoryId);
@@ -221,7 +221,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		String getSign = param.getGetSign();
 		if (TextUtils.isEmptys(bgcId, bgcsId, getSign)) {
 			log.error("请求参数为空，" + param);
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		// 查看
 		if (getSign.equals("lookSign")) {
@@ -334,7 +334,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 //			String bgemId = TextUtils.getMapForKeyToString(param, "bgemId");
 		if (TextUtils.isEmptys(id)) {
 			log.error("请求参数为空，" + param);
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsCard bossGoodsCard = new GoodsCard();
 		bossGoodsCard.setId(Long.parseLong(id));
@@ -398,7 +398,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		String status = String.valueOf(param.getGoodStatus());
 		if (TextUtils.isEmptys(id, status)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsCard goodsCardCheck = goodsCardService.getById(id);
 		if (goodsCardCheck == null) {
@@ -474,7 +474,7 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 		String reviewRemarks = param.getReviewRemarks();
 		if (TextUtils.isEmptys(id, reviewStatus, reviewRemarks)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsCard goodsCardCheck = goodsCardService.getById(id);
 		if (goodsCardCheck == null) {

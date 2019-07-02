@@ -21,7 +21,7 @@ import com.ydsh.generator.common.JsonResult;
 import com.ydsh.generator.common.PageParam;
 import com.ydsh.goods.common.enums.DBDictionaryEnumManager;
 import com.ydsh.goods.common.enums.ErrorCode;
-import com.ydsh.goods.common.exception.SystemException;
+import com.ydsh.goods.common.exception.BizException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsCategory;
@@ -95,12 +95,12 @@ public class GoodsCategoryController extends AbstractController<GoodsCategorySer
 		String status = String.valueOf(entity.getStatus());
 		if (TextUtils.isEmptys(id, status)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsCategory goodsCategoryCheck = baseService.getById(id);
 		if (goodsCategoryCheck == null) {
 			log.error("请求参数异常，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常");
 		}
 		// 启用
 		if (status.equals(DBDictionaryEnumManager.user_status_0.getkey())) {
@@ -127,7 +127,7 @@ public class GoodsCategoryController extends AbstractController<GoodsCategorySer
 			}
 		} else {
 			log.error("请求参数异常，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常");
 		}
 	}
 

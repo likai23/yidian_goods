@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ydsh.generator.common.JsonResult;
 import com.ydsh.goods.common.enums.DBDictionaryEnumManager;
 import com.ydsh.goods.common.enums.ErrorCode;
-import com.ydsh.goods.common.exception.SystemException;
+import com.ydsh.goods.common.exception.BizException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsAttributeManager;
@@ -68,7 +68,7 @@ public class GoodsAttributeManagerController
 		JsonResult<Object> result = new JsonResult<Object>();
 		if (param.getGcId() == null || param.getStatus() == null || param.getAttributeName() == null) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		baseService.save(param);
 		result.success("添加成功");
@@ -93,12 +93,12 @@ public class GoodsAttributeManagerController
 		String attributeName = param.getAttributeName();
 		if (TextUtils.isEmptys(id, gcId, status, attributeName)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsAttributeManager goodsAttributeManagerCheck = baseService.getById(id);
 		if (goodsAttributeManagerCheck == null) {
 			log.error("请求参数异常，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常");
 		}
 		GoodsAttributeManager goodsAttributeManager = new GoodsAttributeManager();
 		goodsAttributeManager.setId(Long.parseLong(id));
@@ -129,12 +129,12 @@ public class GoodsAttributeManagerController
 		String status = String.valueOf(param.getStatus());
 		if (TextUtils.isEmptys(id, status)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsAttributeManager goodsAttributeManagerCheck = baseService.getById(id);
 		if (goodsAttributeManagerCheck == null) {
 			log.error("请求参数异常，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常");
 		}
 		// 上架
 		if (status.equals(DBDictionaryEnumManager.user_status_0.getkey())) {
@@ -167,7 +167,7 @@ public class GoodsAttributeManagerController
 			}
 		} else {
 			log.error("请求参数异常，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能异常");
 		}
 		return result;
 	}

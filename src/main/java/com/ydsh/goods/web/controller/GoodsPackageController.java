@@ -29,7 +29,7 @@ import com.ydsh.goods.common.enums.DBBusinessKeyTypeEnums;
 import com.ydsh.goods.common.enums.DBDictionaryEnumManager;
 import com.ydsh.goods.common.enums.ErrorCode;
 import com.ydsh.goods.common.enums.SuccessCode;
-import com.ydsh.goods.common.exception.SystemException;
+import com.ydsh.goods.common.exception.BizException;
 import com.ydsh.goods.common.util.TextUtils;
 import com.ydsh.goods.web.controller.base.AbstractController;
 import com.ydsh.goods.web.entity.GoodsPackage;
@@ -161,7 +161,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String packageStatus = param.getPackageStatus();
 		if (TextUtils.isEmptys(packageName, denomination)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		QueryWrapper<GoodsPackage> queryWrapper = new QueryWrapper<GoodsPackage>();
 		queryWrapper.eq("package_name", packageName);
@@ -174,7 +174,6 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		bossGoodsPackage.setGpNo(gpNo);
 		bossGoodsPackage.setPackageName(packageName);
 		bossGoodsPackage.setPackageForshort(packageForshort);
-
 		bossGoodsPackage.setDenomination(new Integer(turnForInt(denomination)));
 		bossGoodsPackage.setPackageStatus(packageStatus);
 		bossGoodsPackage.setReviewStatus(DBDictionaryEnumManager.review_0.getkey());
@@ -224,7 +223,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String packageStatus = param.getPackageStatus();
 		if (TextUtils.isEmptys(id, gpNo, packageName, denomination)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		QueryWrapper<GoodsPackage> queryWrapperCheck = new QueryWrapper<GoodsPackage>();
 		queryWrapperCheck.eq("package_name", packageName);
@@ -298,7 +297,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String packageStatus = param.getPackageStatus();
 		if (TextUtils.isEmptys(id, packageStatus)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsPackage goodsPackageCheck = baseService.getById(id);
 		// 上架
@@ -373,12 +372,12 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String reviewRemarks = param.getReviewRemarks();
 		if (TextUtils.isEmptys(id, reviewStatus, reviewRemarks)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		GoodsPackage goodsPackageCheck = baseService.getById(id);
 		if (goodsPackageCheck == null) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		if (!(goodsPackageCheck.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey()))) {
 			log.error("不为待审核状态，不允许审核");
@@ -414,7 +413,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 		String lookSign = param.getLookSign();
 		if (TextUtils.isEmptys(id, lookSign)) {
 			log.error("请求参数为空，");
-			throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空", new Exception());
+			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "参数不能为空");
 		}
 		// 查看套餐商品
 		if (lookSign.equals("lookPackageGoods")) {
@@ -423,7 +422,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 			GoodsPackage goodsPackage = baseService.getById(id);
 			if (goodsPackage == null) {
 				log.error("请求参数异常，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
+				throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常");
 			}
 			GoodsPackageDto goodsPackageDto = new GoodsPackageDto();
 			BeanUtils.copyProperties(goodsPackage, goodsPackageDto);
@@ -445,7 +444,7 @@ public class GoodsPackageController extends AbstractController<GoodsPackageServi
 			GoodsPackage goodsPackage = baseService.getById(id);
 			if (goodsPackage == null) {
 				log.error("请求参数异常，");
-				throw new SystemException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常", new Exception());
+				throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常");
 			}
 			if (goodsPackage.getReviewStatus().equals(DBDictionaryEnumManager.review_0.getkey())
 					|| goodsPackage.getReviewStatus().equals(DBDictionaryEnumManager.review_2.getkey())) {
