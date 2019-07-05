@@ -165,7 +165,7 @@ public class GoodsCategoryController extends AbstractController<GoodsCategorySer
 			}
 		}
 		for (Map<String, Object> map : treeList) {
-			map.put("children", ListToTree((Integer) map.get("id"), listData));
+			map.put("children", ListToTree((Integer) map.get("id"), listData)); 
 		}
 		return treeList;
 	}
