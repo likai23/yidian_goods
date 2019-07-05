@@ -126,8 +126,13 @@ public enum DBDictionaryEnumManager {
 	coupon_code_review_2("ccr_2","延期"),
 	coupon_code_review_3("ccr_3","冻结"),
 	coupon_code_review_4("ccr_4","加密导出"),
-	
-	
+	/**
+	 * 劵码形式
+	 */
+	card_numberAndpassword("cn","卡号卡密"),
+	card_password("cp","卡密"),
+	short_link("sl","短链"),
+	short_link_password("slp","短链卡密"),
 	
 	
 	;
