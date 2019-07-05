@@ -159,7 +159,7 @@ public class GoodsCategoryController extends AbstractController<GoodsCategorySer
 		Iterator<Map<String, Object>> it = listData.iterator();
 		while (it.hasNext()) {
 			Map<String, Object> map = (Map<String, Object>) it.next();
-			if (map.get("parent_id") == id || String.valueOf(map.get("parentId")).equals(String.valueOf(id))) {
+			if (map.get("parent_id") == id || String.valueOf(map.get("parent_id")).equals(String.valueOf(id))) {
 				treeList.add(map);
 				it.remove();
 			}
