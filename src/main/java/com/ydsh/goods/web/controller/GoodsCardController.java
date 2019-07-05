@@ -384,14 +384,14 @@ public class GoodsCardController extends AbstractController<GoodsCardService, Go
 
 	/**
 	 * 
-	 * *启用/禁用/作废卡券商品
+	 * *上架/下架/作废卡券商品
 	 *
 	 * @param @param  param
 	 * @param @return
 	 * @return
 	 */
 	@RequestMapping(value = "/updateGoodsCardStatus", method = RequestMethod.POST)
-	@ApiOperation(value = "启用/禁用/作废卡券商品", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
+	@ApiOperation(value = "上架/下架/作废卡券商品", notes = "分页查询返回[IPage<T>],作者：戴艺辉")
 	public JsonResult<Object> updateGoodsCardStatus(@RequestBody updateGoodsCardAndSkuStatusDto param) {
 		JsonResult<Object> result = new JsonResult<Object>();
 		String id = String.valueOf(param.getGcId());

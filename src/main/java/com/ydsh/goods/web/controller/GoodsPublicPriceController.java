@@ -344,9 +344,9 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 	 * @param @return
 	 * @return
 	 */
-	@RequestMapping(value = "/removeGoodsPricePage", method = RequestMethod.POST)
+	@RequestMapping(value = "/removeGoodsPrice", method = RequestMethod.POST)
 	@ApiOperation(value = "删除供应价调整单", notes = "作者：戴艺辉")
-	public JsonResult<Object> removeGoodsPricePage(@RequestBody RemoveGoodsPublicPriceDto param) {
+	public JsonResult<Object> removeGoodsPrice(@RequestBody RemoveGoodsPublicPriceDto param) {
 		JsonResult<Object> returnPage = new JsonResult<Object>();
 		String id = String.valueOf(param.getId());
 		if (TextUtils.isEmpty(id)) {
@@ -382,10 +382,10 @@ public class GoodsPublicPriceController extends AbstractController<GoodsPublicPr
 	 * @param @return
 	 * @return
 	 */
-	@RequestMapping(value = "/reviewGoodsPricePage", method = RequestMethod.POST)
+	@RequestMapping(value = "/reviewGoodsPrice", method = RequestMethod.POST)
 	@ApiOperation(value = "审核供应价调整单", notes = "作者：戴艺辉")
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
-	public JsonResult<Object> reviewGoodsPricePage(@RequestBody ReviewGoodsPublicPriceDto param) {
+	public JsonResult<Object> reviewGoodsPrice(@RequestBody ReviewGoodsPublicPriceDto param) {
 		JsonResult<Object> returnPage = new JsonResult<Object>();
 		String id = String.valueOf(param.getId());
 		String auditorStatus = param.getReviewStatus();

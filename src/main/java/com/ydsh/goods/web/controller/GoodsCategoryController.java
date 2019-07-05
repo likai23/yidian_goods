@@ -6,7 +6,10 @@
  */
 package com.ydsh.goods.web.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/goodsCategory")
 @Slf4j
 public class GoodsCategoryController extends AbstractController<GoodsCategoryService, GoodsCategory> {
-
 
 	@Autowired
 	private GoodsCategoryService goodsCategoryService;
@@ -129,6 +131,43 @@ public class GoodsCategoryController extends AbstractController<GoodsCategorySer
 			log.error("请求参数异常，");
 			throw new BizException(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "请求参数异常");
 		}
+	}
+
+	/**
+	 * @explain 得到树形结构列表
+	 * @param entity
+	 * @return JsonResult
+	 * @author 戴艺辉
+	 * @time 2019-06-12 10:08:37
+	 */
+	@RequestMapping(value = "/getCategoryForTree", method = RequestMethod.POST)
+	@ApiOperation(value = "得到树形结构列表", notes = "作者：戴艺辉")
+	public JsonResult<Object> getCategoryForTree() {
+		JsonResult<Object> result = new JsonResult<Object>();
+		try {
+			List<Map<String, Object>> treeMap = ListToTree(null, baseService.listMaps());
+			result.setData(treeMap);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public static List<Map<String, Object>> ListToTree(Integer id, List<Map<String, Object>> listData) throws Exception {
+		List<Map<String, Object>> treeList = new ArrayList<Map<String, Object>>();
+		Iterator<Map<String, Object>> it = listData.iterator();
+		while (it.hasNext()) {
+			Map<String, Object> map = (Map<String, Object>) it.next();
+			if (map.get("parent_id") == id || String.valueOf(map.get("parentId")).equals(String.valueOf(id))) {
+				treeList.add(map);
+				it.remove();
+			}
+		}
+		for (Map<String, Object> map : treeList) {
+			map.put("children", ListToTree((Integer) map.get("id"), listData));
+		}
+		return treeList;
 	}
 
 }
